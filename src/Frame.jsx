@@ -278,7 +278,7 @@ function DesktopHome({ onSelect }) {
               color: '#727272',
               flexShrink: 0,
               fontFamily: '"Inter", system-ui, sans-serif',
-              fontSize: '12px',
+              fontSize: '14px',
               fontWeight: 500,
               letterSpacing: '-0.03em',
               lineHeight: '150%',
