@@ -27,14 +27,6 @@ const sections = [
 ];
 
 const detailViews = {
-  research: {
-    title: 'Research papers',
-    description:
-      'A collection of my most recent research papers. You will be taken to Notion in case you want to read them.',
-    heroImage:
-      'url(https://workers.paper.design/file-assets/01K9M7AXRCSP41EEZ22CNJ158C/01K9N09XFPKWKR03V2F89KC21S.png)',
-    entries: ['Kakimasu', 'Stack'],
-  },
   caseStudies: {
     title: 'Case studies',
     description:
@@ -54,7 +46,7 @@ function ListDivider({ isMobile }) {
         boxSizing: 'border-box',
         flexShrink: 0,
         height: '1px',
-        width: 'auto',
+        width: '361px',
       }}
     />
   );
@@ -232,7 +224,7 @@ function DesktopHome({ onSelect }) {
             <SectionButton
               section={section}
               onSelect={onSelect}
-              isInteractive={section.id !== 'playground'}
+              isInteractive={section.id === 'caseStudies'}
             />
             {index < sections.length - 1 && <ListDivider />}
           </div>
@@ -337,7 +329,7 @@ function MobileHome({ onSelect }) {
             <SectionButton
               section={section}
               onSelect={onSelect}
-              isInteractive={section.id !== 'playground'}
+              isInteractive={section.id === 'caseStudies'}
             />
             {index < sections.length - 1 && <ListDivider isMobile />}
           </div>
@@ -348,63 +340,81 @@ function MobileHome({ onSelect }) {
 }
 
 function DetailEntries({ entries }) {
+  const containerStyle = {
+    alignItems: 'start',
+    boxSizing: 'border-box',
+    contain: 'layout',
+    display: 'flex',
+    flexDirection: 'column',
+    flexShrink: '0',
+    fontSynthesis: 'none',
+    gap: '8px',
+    height: 'fit-content',
+    justifyContent: 'end',
+    MozOsxFontSmoothing: 'grayscale',
+    overflowWrap: 'break-word',
+    paddingBlock: 0,
+    paddingInline: 0,
+    WebkitFontSmoothing: 'antialiased',
+    width: 'fit-content',
+  };
+
+  const entryWrapperStyle = {
+    alignItems: 'start',
+    boxSizing: 'border-box',
+    contain: 'layout',
+    display: 'flex',
+    flexDirection: 'column',
+    flexShrink: '0',
+    gap: 0,
+    height: 'fit-content',
+    justifyContent: 'start',
+    overflowWrap: 'break-word',
+    paddingBlock: '4px',
+    paddingInline: 0,
+    width: 'fit-content',
+  };
+
+  const entryTextStyle = {
+    boxSizing: 'border-box',
+    color: '#000000',
+    flexShrink: '0',
+    fontFamily: '"Inter", system-ui, sans-serif',
+    fontSize: '16px',
+    fontWeight: 400,
+    height: 'fit-content',
+    letterSpacing: '-0.03em',
+    lineHeight: '150%',
+    whiteSpace: 'pre',
+    width: 'fit-content',
+  };
+
+  const dividerStyle = {
+    backgroundColor: '#DDDDDD',
+    boxSizing: 'border-box',
+    flexShrink: '0',
+    height: '1px',
+    width: '361px',
+  };
+
+  const nodes = [];
+
+  entries.forEach((entry, index) => {
+    nodes.push(
+      <div key={`entry-${entry}-${index}`} style={entryWrapperStyle}>
+        <div style={entryTextStyle}>{entry}</div>
+      </div>,
+    );
+
+    if (index < entries.length - 1) {
+      nodes.push(
+        <div key={`divider-${entry}-${index}`} style={dividerStyle} />,
+      );
+    }
+  });
+
   return (
-    <div
-      style={{
-        alignItems: 'start',
-        boxSizing: 'border-box',
-        contain: 'layout',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '8px',
-        justifyContent: 'end',
-        width: 'fit-content',
-      }}
-    >
-      {entries.map((entry) => (
-        <div
-          key={entry}
-          style={{
-            alignItems: 'start',
-            boxSizing: 'border-box',
-            contain: 'layout',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 0,
-            paddingBlock: '4px',
-            width: 'fit-content',
-          }}
-        >
-          <div
-            style={{
-              boxSizing: 'border-box',
-              color: '#000000',
-              flexShrink: 0,
-              fontFamily: '"Inter", system-ui, sans-serif',
-              fontSize: '16px',
-              fontWeight: 400,
-              letterSpacing: '-0.03em',
-              lineHeight: '150%',
-              whiteSpace: 'pre',
-            }}
-          >
-            {entry}
-          </div>
-          {entry !== entries[entries.length - 1] && (
-            <div
-              style={{
-                backgroundColor: '#DDDDDD',
-                boxSizing: 'border-box',
-                flexShrink: 0,
-                height: '1px',
-                marginTop: '4px',
-                width: '361px',
-              }}
-            />
-          )}
-        </div>
-      ))}
-    </div>
+    <div style={containerStyle}>{nodes}</div>
   );
 }
 
@@ -419,7 +429,6 @@ function BackButton({ onBack }) {
         backgroundColor: '#FFFFFF',
         border: 'none',
         borderRadius: 'calc(infinity * 1px)',
-        boxShadow: '0 10px 30px rgba(0, 0, 0, 0.08)',
         cursor: 'pointer',
         display: 'flex',
         flexDirection: 'row',
