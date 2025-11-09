@@ -1,6 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 const MOBILE_BREAKPOINT = 768;
+
+const TRANSITION_DURATION_MS = 1600;
 
 const sections = [
   {
@@ -796,6 +798,8 @@ export default function Frame() {
   );
   const [activeView, setActiveView] = useState('home');
   const [animationState, setAnimationState] = useState('idle');
+  const queuedFramesRef = useRef([]);
+  const transitionTimeoutRef = useRef(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -814,56 +818,75 @@ export default function Frame() {
     };
   }, []);
 
-  useEffect(() => {
+  const clearQueuedFrames = useCallback(() => {
     if (typeof window === 'undefined') {
-      return undefined;
+      queuedFramesRef.current = [];
+      return;
     }
 
-    let frame1;
-    let frame2;
-    let cancelled = false;
+    queuedFramesRef.current.forEach((frameId) => {
+      window.cancelAnimationFrame(frameId);
+    });
+    queuedFramesRef.current = [];
+  }, []);
 
-    const kickOff = () => {
-      if (cancelled) {
-        return;
-      }
+  const clearTransitionTimeout = useCallback(() => {
+    if (typeof window === 'undefined') {
+      transitionTimeoutRef.current = null;
+      return;
+    }
 
-      setAnimationState('pre');
-      frame1 = window.requestAnimationFrame(() => {
-        frame2 = window.requestAnimationFrame(() => {
-          if (!cancelled) {
-            setAnimationState('active');
-          }
-        });
+    if (transitionTimeoutRef.current !== null) {
+      window.clearTimeout(transitionTimeoutRef.current);
+      transitionTimeoutRef.current = null;
+    }
+  }, []);
+
+  const beginTransition = useCallback(() => {
+    if (typeof window === 'undefined') {
+      setAnimationState('idle');
+      return;
+    }
+
+    clearQueuedFrames();
+    clearTransitionTimeout();
+
+    setAnimationState('pre');
+
+    const firstFrame = window.requestAnimationFrame(() => {
+      const secondFrame = window.requestAnimationFrame(() => {
+        setAnimationState('enter');
       });
-    };
 
-    kickOff();
+      queuedFramesRef.current.push(secondFrame);
+    });
 
-    return () => {
-      cancelled = true;
-      if (frame1) {
-        window.cancelAnimationFrame(frame1);
-      }
-      if (frame2) {
-        window.cancelAnimationFrame(frame2);
-      }
-    };
-  }, [activeView, isMobile]);
+    queuedFramesRef.current.push(firstFrame);
+  }, [clearQueuedFrames, clearTransitionTimeout]);
 
   useEffect(() => {
-    if (animationState !== 'active' || typeof window === 'undefined') {
+    beginTransition();
+
+    return () => {
+      clearQueuedFrames();
+      clearTransitionTimeout();
+    };
+  }, [activeView, beginTransition, clearQueuedFrames, clearTransitionTimeout]);
+
+  useEffect(() => {
+    if (animationState !== 'enter' || typeof window === 'undefined') {
       return undefined;
     }
 
-    const timeout = window.setTimeout(() => {
-      setAnimationState('idle');
-    }, 1100);
+    clearTransitionTimeout();
 
-    return () => {
-      window.clearTimeout(timeout);
-    };
-  }, [animationState]);
+    transitionTimeoutRef.current = window.setTimeout(() => {
+      setAnimationState('idle');
+      transitionTimeoutRef.current = null;
+    }, TRANSITION_DURATION_MS);
+
+    return clearTransitionTimeout;
+  }, [animationState, clearTransitionTimeout]);
 
   const detail = useMemo(() => detailViews[activeView], [activeView]);
 

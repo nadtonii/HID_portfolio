@@ -31,24 +31,24 @@ body {
 
 .view-transition--pre {
   opacity: 0;
-  transform: translate3d(0, 48px, 0) scale(0.975);
-  filter: blur(14px);
+  transform: translate3d(0, 36px, 0) scale(0.982);
+  filter: blur(16px);
 }
 
-.view-transition--active {
-  animation: floatFadeIn 1100ms cubic-bezier(0.22, 1, 0.36, 1) both;
+.view-transition--enter {
+  animation: floatFadeIn 1600ms cubic-bezier(0.19, 1, 0.22, 1) both;
 }
 
 @keyframes floatFadeIn {
   0% {
     opacity: 0;
-    transform: translate3d(0, 48px, 0) scale(0.97);
-    filter: blur(14px);
+    transform: translate3d(0, 36px, 0) scale(0.978);
+    filter: blur(16px);
   }
-  45% {
+  55% {
     opacity: 1;
-    transform: translate3d(0, -10px, 0) scale(1.01);
-    filter: blur(2px);
+    transform: translate3d(0, -6px, 0) scale(1.012);
+    filter: blur(3px);
   }
   100% {
     opacity: 1;
@@ -128,7 +128,7 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .view-transition,
   .view-transition--pre,
-  .view-transition--active {
+  .view-transition--enter {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
