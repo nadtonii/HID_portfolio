@@ -21,7 +21,7 @@ const sections = [
   {
     id: 'playground',
     title: 'Playground',
-    subtitle: '8 designs',
+    subtitle: '4 designs',
     image:
       'url(https://workers.paper.design/file-assets/01K9M7AXRCSP41EEZ22CNJ158C/01K9N23JSJG76YMSNGTK34RM97.png)',
   },
@@ -44,8 +44,16 @@ const detailViews = {
       },
     },
     entries: [
-      'Utilizing Community Feedback to Enhance User Experience and Reduce Iteration Costs',
-      'Conversational User Interface in the Modern Age – Intuitiveness, Effectiveness, and Limitations',
+      {
+        label:
+          'Utilizing Community Feedback to Enhance User Experience and Reduce Iteration Costs',
+        href: 'https://docs.google.com/document/d/1mHKDCJTB8JBXRfW38-l-aeYnM14PSh90TxZMhSwbeyU/edit?usp=sharing',
+      },
+      {
+        label:
+          'Conversational User Interface in the Modern Age – Intuitiveness, Effectiveness, and Limitations',
+        href: 'https://docs.google.com/document/d/14rKT1dTncnCR5FCpYHvQPMkokxPSyWSYrd1U0UCETP8/edit?usp=sharing',
+      },
     ],
     entryStyles: {
       container: {
@@ -77,7 +85,16 @@ const detailViews = {
         width: 'auto',
       },
     },
-    entries: ['Kakimasu', 'Stack'],
+    entries: [
+      {
+        label: 'Kakimasu',
+        href: 'https://toninad.notion.site/kakimasu?source=copy_link',
+      },
+      {
+        label: 'Stack',
+        href: 'https://toninad.notion.site/stack?source=copy_link',
+      },
+    ],
   },
   playground: {
     title: 'Playground',
@@ -94,7 +111,24 @@ const detailViews = {
         width: '393px',
       },
     },
-    entries: ['Voicenotes', 'WorkFeed', 'Aurora Retreat', 'PetRock'],
+    entries: [
+      {
+        label: 'Voicenotes',
+        href: 'https://toninad.notion.site/voicenotes?source=copy_link',
+      },
+      {
+        label: 'WorkFeed',
+        href: 'https://toninad.notion.site/wrkfeed?source=copy_link',
+      },
+      {
+        label: 'Aurora Retreat',
+        href: 'https://toninad.notion.site/aurora?source=copy_link',
+      },
+      {
+        label: 'PetRock',
+        href: 'https://toninad.notion.site/petrock?source=copy_link',
+      },
+    ],
     entryStyles: {
       container: {
         alignSelf: 'stretch',
@@ -478,6 +512,8 @@ function DetailEntries({ entries, styles }) {
     lineHeight: '150%',
     whiteSpace: 'pre',
     width: 'fit-content',
+    display: 'block',
+    textDecoration: 'none',
     ...(styles?.entryText ?? {}),
   };
 
@@ -493,21 +529,35 @@ function DetailEntries({ entries, styles }) {
   const nodes = [];
 
   entries.forEach((entry, index) => {
+    const entryData =
+      entry && typeof entry === 'object' ? entry : { label: entry, href: undefined };
+    const EntryComponent = entryData.href ? 'a' : 'div';
+    const entryProps = entryData.href
+      ? {
+          href: entryData.href,
+          target: '_blank',
+          rel: 'noreferrer noopener',
+          className: 'detail-entry',
+          style: entryTextStyle,
+        }
+      : {
+          className: 'detail-entry',
+          style: entryTextStyle,
+        };
+
     nodes.push(
       <div
-        key={`entry-${entry}-${index}`}
+        key={`entry-${entryData.label}-${index}`}
         className="detail-entry-wrapper"
         style={entryWrapperStyle}
       >
-        <div className="detail-entry" style={entryTextStyle}>
-          {entry}
-        </div>
+        <EntryComponent {...entryProps}>{entryData.label}</EntryComponent>
       </div>,
     );
 
     if (index < entries.length - 1) {
       nodes.push(
-        <div key={`divider-${entry}-${index}`} style={dividerStyle} />,
+        <div key={`divider-${entryData.label}-${index}`} style={dividerStyle} />,
       );
     }
   });
