@@ -145,9 +145,11 @@ function SectionButton({ section, onSelect, isInteractive }) {
         display: 'flex',
         flexDirection: 'row',
         gap: 20,
-        padding: 0,
+        paddingBlock: 0,
+        paddingInline: 0,
         textAlign: 'left',
-        width: 'fit-content',
+        alignSelf: 'stretch',
+        width: '100%',
       }}
     >
       <div
@@ -301,7 +303,10 @@ function DesktopHome({ onSelect }) {
         }}
       >
         {sections.map((section, index) => (
-          <div key={section.id} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div
+            key={section.id}
+            style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '361px' }}
+          >
             <SectionButton
               section={section}
               onSelect={onSelect}
@@ -406,7 +411,10 @@ function MobileHome({ onSelect }) {
         }}
       >
         {sections.map((section, index) => (
-          <div key={section.id} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div
+            key={section.id}
+            style={{ display: 'flex', flexDirection: 'column', gap: '12px', width: '361px' }}
+          >
             <SectionButton
               section={section}
               onSelect={onSelect}

@@ -66,17 +66,12 @@ body {
 }
 
 .section-button {
-  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 200ms ease;
 }
 
-.section-button__image {
-  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
-    filter 320ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
+.section-button__image,
 .section-button__text {
-  transition: color 200ms ease;
+  transition: opacity 200ms ease;
 }
 
 .detail-entries {
@@ -108,18 +103,9 @@ body {
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .section-button:hover {
-    transform: translateX(12px);
-    box-shadow: 0 18px 32px rgba(0, 0, 0, 0.12);
-  }
-
-  .section-button:hover .section-button__image {
-    transform: scale(1.05) rotate(-1.5deg);
-    filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.16));
-  }
-
+  .section-button:hover .section-button__image,
   .section-button:hover .section-button__text {
-    color: #111111;
+    opacity: 0.4;
   }
 
   .detail-entry:hover {
