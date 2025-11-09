@@ -27,12 +27,55 @@ const sections = [
 ];
 
 const detailViews = {
+  research: {
+    title: 'Research Papers',
+    description:
+      'A collection of my most recent research papers. You will be taken to Google Docs in case you want to read them.',
+    heroImage:
+      'url(https://workers.paper.design/file-assets/01K9M7AXRCSP41EEZ22CNJ158C/01K9N1ZB4MFFA6TKMN731J6HNJ.png)',
+    heroStyle: {
+      desktop: {
+        width: '393px',
+      },
+      mobile: {
+        alignSelf: 'auto',
+        width: '393px',
+      },
+    },
+    entries: [
+      'Utilizing Community Feedback to Enhance User Experience and Reduce Iteration Costs',
+      'Conversational User Interface in the Modern Age – Intuitiveness, Effectiveness, and Limitations',
+    ],
+    entryStyles: {
+      container: {
+        alignSelf: 'stretch',
+        width: 'auto',
+      },
+      entryWrapper: {
+        alignSelf: 'stretch',
+        width: 'auto',
+      },
+      entryText: {
+        alignSelf: 'stretch',
+        whiteSpace: 'pre-wrap',
+        width: 'auto',
+      },
+    },
+  },
   caseStudies: {
     title: 'Case studies',
     description:
       'A collection of my most recent case studies. You will be taken to Notion in case you want to read them.',
     heroImage:
       'url(https://workers.paper.design/file-assets/01K9M7AXRCSP41EEZ22CNJ158C/01K9N09XFPKWKR03V2F89KC21S.png)',
+    heroStyle: {
+      desktop: {
+        flex: '1 0 0px',
+        flexBasis: '0px',
+        flexGrow: '1',
+        width: 'auto',
+      },
+    },
     entries: ['Kakimasu', 'Stack'],
   },
 };
@@ -51,6 +94,8 @@ function ListDivider({ isMobile }) {
     />
   );
 }
+
+const interactiveSectionIds = new Set(Object.keys(detailViews));
 
 function SectionButton({ section, onSelect, isInteractive }) {
   return (
@@ -224,7 +269,7 @@ function DesktopHome({ onSelect }) {
             <SectionButton
               section={section}
               onSelect={onSelect}
-              isInteractive={section.id === 'caseStudies'}
+              isInteractive={interactiveSectionIds.has(section.id)}
             />
             {index < sections.length - 1 && <ListDivider />}
           </div>
@@ -329,7 +374,7 @@ function MobileHome({ onSelect }) {
             <SectionButton
               section={section}
               onSelect={onSelect}
-              isInteractive={section.id === 'caseStudies'}
+              isInteractive={interactiveSectionIds.has(section.id)}
             />
             {index < sections.length - 1 && <ListDivider isMobile />}
           </div>
@@ -339,7 +384,7 @@ function MobileHome({ onSelect }) {
   );
 }
 
-function DetailEntries({ entries }) {
+function DetailEntries({ entries, styles }) {
   const containerStyle = {
     alignItems: 'start',
     boxSizing: 'border-box',
@@ -357,6 +402,7 @@ function DetailEntries({ entries }) {
     paddingInline: 0,
     WebkitFontSmoothing: 'antialiased',
     width: 'fit-content',
+    ...(styles?.container ?? {}),
   };
 
   const entryWrapperStyle = {
@@ -373,6 +419,7 @@ function DetailEntries({ entries }) {
     paddingBlock: '4px',
     paddingInline: 0,
     width: 'fit-content',
+    ...(styles?.entryWrapper ?? {}),
   };
 
   const entryTextStyle = {
@@ -387,6 +434,7 @@ function DetailEntries({ entries }) {
     lineHeight: '150%',
     whiteSpace: 'pre',
     width: 'fit-content',
+    ...(styles?.entryText ?? {}),
   };
 
   const dividerStyle = {
@@ -395,6 +443,7 @@ function DetailEntries({ entries }) {
     flexShrink: '0',
     height: '1px',
     width: '361px',
+    ...(styles?.divider ?? {}),
   };
 
   const nodes = [];
@@ -508,9 +557,9 @@ function DesktopDetail({ detail, onBack }) {
             backgroundPosition: 'center',
             backgroundSize: 'cover',
             boxSizing: 'border-box',
-            flex: '1 0 0px',
+            flexShrink: '0',
             height: '393px',
-            width: 'auto',
+            ...(detail.heroStyle?.desktop ?? {}),
           }}
         />
         <div
@@ -568,7 +617,7 @@ function DesktopDetail({ detail, onBack }) {
               {detail.description}
             </div>
           </div>
-          <DetailEntries entries={detail.entries} />
+          <DetailEntries entries={detail.entries} styles={detail.entryStyles} />
         </div>
       </div>
     </div>
@@ -631,7 +680,9 @@ function MobileDetail({ detail, onBack }) {
             backgroundPosition: 'center',
             backgroundSize: 'cover',
             boxSizing: 'border-box',
+            flexShrink: '0',
             height: '393px',
+            ...(detail.heroStyle?.mobile ?? {}),
           }}
         />
         <div
@@ -689,7 +740,7 @@ function MobileDetail({ detail, onBack }) {
               {detail.description}
             </div>
           </div>
-          <DetailEntries entries={detail.entries} />
+          <DetailEntries entries={detail.entries} styles={detail.entryStyles} />
         </div>
       </div>
     </div>
