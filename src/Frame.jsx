@@ -795,7 +795,7 @@ export default function Frame() {
     typeof window !== 'undefined' ? window.innerWidth <= MOBILE_BREAKPOINT : false,
   );
   const [activeView, setActiveView] = useState('home');
-  const [transitionKey, setTransitionKey] = useState(0);
+  const [animationState, setAnimationState] = useState('idle');
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -815,8 +815,55 @@ export default function Frame() {
   }, []);
 
   useEffect(() => {
-    setTransitionKey((key) => key + 1);
+    if (typeof window === 'undefined') {
+      return undefined;
+    }
+
+    let frame1;
+    let frame2;
+    let cancelled = false;
+
+    const kickOff = () => {
+      if (cancelled) {
+        return;
+      }
+
+      setAnimationState('pre');
+      frame1 = window.requestAnimationFrame(() => {
+        frame2 = window.requestAnimationFrame(() => {
+          if (!cancelled) {
+            setAnimationState('active');
+          }
+        });
+      });
+    };
+
+    kickOff();
+
+    return () => {
+      cancelled = true;
+      if (frame1) {
+        window.cancelAnimationFrame(frame1);
+      }
+      if (frame2) {
+        window.cancelAnimationFrame(frame2);
+      }
+    };
   }, [activeView, isMobile]);
+
+  useEffect(() => {
+    if (animationState !== 'active' || typeof window === 'undefined') {
+      return undefined;
+    }
+
+    const timeout = window.setTimeout(() => {
+      setAnimationState('idle');
+    }, 1100);
+
+    return () => {
+      window.clearTimeout(timeout);
+    };
+  }, [animationState]);
 
   const detail = useMemo(() => detailViews[activeView], [activeView]);
 
@@ -830,9 +877,12 @@ export default function Frame() {
     content = isMobile ? <MobileHome onSelect={setActiveView} /> : <DesktopHome onSelect={setActiveView} />;
   }
 
-  return (
-    <div key={`${transitionKey}-${isMobile}`} className="view-transition">
-      {content}
-    </div>
-  );
+  const transitionClassNames = [
+    'view-transition',
+    animationState !== 'idle' ? `view-transition--${animationState}` : null,
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  return <div className={transitionClassNames}>{content}</div>;
 }
