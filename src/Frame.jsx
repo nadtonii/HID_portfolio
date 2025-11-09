@@ -134,6 +134,7 @@ function SectionButton({ section, onSelect, isInteractive }) {
     <button
       type="button"
       onClick={() => (isInteractive ? onSelect(section.id) : undefined)}
+      className="section-button"
       style={{
         alignItems: 'center',
         background: 'none',
@@ -149,6 +150,7 @@ function SectionButton({ section, onSelect, isInteractive }) {
       }}
     >
       <div
+        className="section-button__image"
         style={{
           backgroundImage: section.image,
           backgroundPosition: 'center',
@@ -160,6 +162,7 @@ function SectionButton({ section, onSelect, isInteractive }) {
         }}
       />
       <div
+        className="section-button__text"
         style={{
           alignItems: 'start',
           display: 'flex',
@@ -482,8 +485,14 @@ function DetailEntries({ entries, styles }) {
 
   entries.forEach((entry, index) => {
     nodes.push(
-      <div key={`entry-${entry}-${index}`} style={entryWrapperStyle}>
-        <div style={entryTextStyle}>{entry}</div>
+      <div
+        key={`entry-${entry}-${index}`}
+        className="detail-entry-wrapper"
+        style={entryWrapperStyle}
+      >
+        <div className="detail-entry" style={entryTextStyle}>
+          {entry}
+        </div>
       </div>,
     );
 
@@ -495,7 +504,9 @@ function DetailEntries({ entries, styles }) {
   });
 
   return (
-    <div style={containerStyle}>{nodes}</div>
+    <div className="detail-entries" style={containerStyle}>
+      {nodes}
+    </div>
   );
 }
 
