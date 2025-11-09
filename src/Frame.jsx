@@ -38,7 +38,7 @@ const detailViews = {
         width: '393px',
       },
       mobile: {
-        alignSelf: 'auto',
+        alignSelf: 'stretch',
         width: '393px',
       },
     },
@@ -77,6 +77,38 @@ const detailViews = {
       },
     },
     entries: ['Kakimasu', 'Stack'],
+  },
+  playground: {
+    title: 'Playground',
+    description:
+      'A collection of my most recent design exploration. \nYou will be taken to Notion in case you want to see them.',
+    heroImage:
+      'url(https://workers.paper.design/file-assets/01K9M7AXRCSP41EEZ22CNJ158C/01K9N23JSJG76YMSNGTK34RM97.png)',
+    heroStyle: {
+      desktop: {
+        width: '393px',
+      },
+      mobile: {
+        alignSelf: 'stretch',
+        width: '393px',
+      },
+    },
+    entries: ['Voicenotes', 'WorkFeed', 'Aurora Retreat', 'PetRock'],
+    entryStyles: {
+      container: {
+        alignSelf: 'stretch',
+        width: 'auto',
+      },
+      entryWrapper: {
+        alignSelf: 'stretch',
+        width: 'auto',
+      },
+      entryText: {
+        alignSelf: 'stretch',
+        whiteSpace: 'pre-wrap',
+        width: 'auto',
+      },
+    },
   },
 };
 
