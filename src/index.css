@@ -21,3 +21,12 @@ body {
 #root {
   min-height: 100dvh;
 }
+
+.hover-fade {
+  transition: opacity 200ms ease-in-out;
+}
+
+.hover-fade:hover,
+.hover-fade:focus-visible {
+  opacity: 0.6;
+}

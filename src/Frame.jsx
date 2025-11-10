@@ -111,6 +111,7 @@ function DesktopFrame() {
         }}
       >
         <div
+          className="hover-fade"
           style={{
             alignItems: 'center',
             boxSizing: 'border-box',
@@ -203,6 +204,7 @@ function DesktopFrame() {
           }}
         />
         <div
+          className="hover-fade"
           style={{
             alignItems: 'center',
             boxSizing: 'border-box',
@@ -295,6 +297,7 @@ function DesktopFrame() {
           }}
         />
         <div
+          className="hover-fade"
           style={{
             alignItems: 'center',
             boxSizing: 'border-box',
@@ -492,6 +495,7 @@ function MobileFrame() {
         }}
       >
         <div
+          className="hover-fade"
           style={{
             alignItems: 'center',
             boxSizing: 'border-box',
@@ -584,6 +588,7 @@ function MobileFrame() {
           }}
         />
         <div
+          className="hover-fade"
           style={{
             alignItems: 'center',
             boxSizing: 'border-box',
@@ -676,6 +681,7 @@ function MobileFrame() {
           }}
         />
         <div
+          className="hover-fade"
           style={{
             alignItems: 'center',
             boxSizing: 'border-box',
