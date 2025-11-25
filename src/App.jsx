@@ -45,6 +45,7 @@ export default function App() {
   const [sidePadding, setSidePadding] = useState({ left: 20, right: 20 });
   const [isMobile, setIsMobile] = useState(false);
   const [mobileStageHeight, setMobileStageHeight] = useState(null);
+  const [navHeight, setNavHeight] = useState(0);
   const navRef = useRef(null);
 
   const calculateSidePadding = () => {
@@ -107,16 +108,23 @@ export default function App() {
     centerSelected(selectedIndex);
   }, [selectedIndex]);
 
-  const updateMobileStageHeight = () => {
+  const updateMobileStageHeight = (navHeightValue) => {
     if (!isMobile) return;
 
-    const navHeight = navRef.current?.offsetHeight || 0;
+    const navHeight =
+      navHeightValue ?? navRef.current?.offsetHeight ?? 0;
     const carouselHeight = carouselRef.current?.offsetHeight || 0;
     const viewportHeight = window.visualViewport?.height || window.innerHeight || 0;
     const availableHeight = viewportHeight - navHeight - carouselHeight;
     const clampedHeight = Math.max(360, Math.min(availableHeight, 640));
 
     setMobileStageHeight(clampedHeight);
+  };
+
+  const updateNavHeight = () => {
+    const navMeasuredHeight = navRef.current?.offsetHeight || 0;
+    setNavHeight(navMeasuredHeight);
+    return navMeasuredHeight;
   };
 
   useEffect(() => {
@@ -126,7 +134,8 @@ export default function App() {
     const handleResize = () => {
       calculateSidePadding();
       centerSelected(selectedIndex);
-      updateMobileStageHeight();
+      const measuredNavHeight = updateNavHeight();
+      updateMobileStageHeight(measuredNavHeight);
     };
 
     window.addEventListener('resize', handleResize);
@@ -137,8 +146,10 @@ export default function App() {
   }, [selectedIndex, isMobile]);
 
   useEffect(() => {
+    const measuredNavHeight = updateNavHeight();
+
     if (isMobile) {
-      updateMobileStageHeight();
+      updateMobileStageHeight(measuredNavHeight);
     }
   }, [isMobile]);
 
@@ -421,11 +432,12 @@ export default function App() {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: isMobile ? 'flex-start' : 'center',
-          gap: '16px',
+          gap: '8px',
           width: '100%',
           flex: '1 1 auto',
           paddingInline: '20px',
           paddingBottom: isMobile ? '20px' : '28px',
+          paddingTop: `${(navHeight || 0) + 8}px`,
           boxSizing: 'border-box',
         }}
       >
