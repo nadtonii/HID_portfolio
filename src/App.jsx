@@ -361,7 +361,9 @@ export default function App() {
                 transitionDirection === 1 ? 'exit-to-left' : 'exit-to-right'
               }`}
             >
-              {renderProjectContent(projects[exitingIndex], { showTag: false })}
+              <div className="project-content-wrapper">
+                {renderProjectContent(projects[exitingIndex], { showTag: false })}
+              </div>
             </div>
           )}
           <div
@@ -370,7 +372,9 @@ export default function App() {
               transitionDirection === 1 ? 'enter-from-right' : 'enter-from-left'
             }`}
           >
-            {renderProjectContent(projects[selectedIndex], { showTag })}
+            <div className="project-content-wrapper">
+              {renderProjectContent(projects[selectedIndex], { showTag })}
+            </div>
           </div>
         </div>
       </div>
