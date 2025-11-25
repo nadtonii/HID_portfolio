@@ -157,10 +157,12 @@ body {
   .project-content-wrapper {
     --project-base-width: 834;
     --project-mobile-scale: 1;
-    --project-mobile-width: min(350px, 94vw);
+    --project-mobile-width: min(360px, 94vw);
     --project-mobile-padding: 6px 4px;
-    max-width: var(--project-mobile-width, min(350px, 94vw));
-    width: var(--project-mobile-width, min(350px, 94vw));
+    max-width: var(--project-mobile-width, min(360px, 94vw));
+    width: var(--project-mobile-width, min(360px, 94vw));
+    max-height: 386px;
+    height: auto;
     margin-inline: auto;
     padding: var(--project-mobile-padding, 6px 4px);
     transform: scale(var(--project-mobile-scale, 1));
@@ -179,6 +181,33 @@ body {
   #root {
     min-height: 100vh;
     min-height: 100dvh;
+  }
+
+  .mobile-page-controls {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 8px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    pointer-events: auto;
+  }
+
+  .mobile-page-control-button {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    border: none;
+    background-color: #e0e0e0;
+    padding: 0;
+    cursor: pointer;
+    transition: transform 160ms ease, background-color 160ms ease;
+  }
+
+  .mobile-page-control-button.active {
+    background-color: #000000;
+    transform: scale(1.2);
   }
 }
 

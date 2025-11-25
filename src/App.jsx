@@ -303,6 +303,22 @@ export default function App() {
   const containerClassName = `app-container${isMobile ? ' mobile-layout' : ''}`;
   const navClassName = isMobile ? 'mobile-nav' : '';
 
+  const pageControls = (
+    <div className="mobile-page-controls">
+      {projects.map((project, index) => (
+        <button
+          key={project}
+          type="button"
+          className={`mobile-page-control-button${
+            index === selectedIndex ? ' active' : ''
+          }`}
+          aria-label={`Go to ${project}`}
+          onClick={() => handleSelectProject(index)}
+        />
+      ))}
+    </div>
+  );
+
   return (
     <div
       className={containerClassName}
@@ -555,6 +571,7 @@ export default function App() {
           ))}
         </div>
       </div>
+      {isMobile && pageControls}
     </div>
   );
 }
@@ -614,7 +631,8 @@ function FlowsProject({ showTag, isMobile }) {
           justifyContent: 'start',
           MozOsxFontSmoothing: 'grayscale',
           WebkitFontSmoothing: 'antialiased',
-          width: 'fit-content',
+          width: '100%',
+          maxWidth: '360px',
         }}
       >
         <div
@@ -623,7 +641,8 @@ function FlowsProject({ showTag, isMobile }) {
             contain: 'layout',
             flexShrink: '0',
             height: '276px',
-            width: '360px',
+            width: '100%',
+            maxWidth: '360px',
             position: 'relative',
           }}
         >
@@ -653,14 +672,15 @@ function FlowsProject({ showTag, isMobile }) {
               left: '0',
               position: 'absolute',
               top: '0',
-              width: '360px',
+              width: '100%',
+              maxWidth: '360px',
             }}
           />
         </div>
         {showTag && (
           <div
             style={{
-              alignItems: 'center',
+              alignItems: 'flex-start',
               boxSizing: 'border-box',
               contain: 'layout',
               display: 'flex',
@@ -669,7 +689,10 @@ function FlowsProject({ showTag, isMobile }) {
               height: 'fit-content',
               justifyContent: 'center',
               paddingBlock: '9px',
-              width: 'fit-content',
+              width: '100%',
+              maxWidth: '360px',
+              gap: '6px',
+              marginTop: '32px',
             }}
           >
             <div
@@ -684,7 +707,7 @@ function FlowsProject({ showTag, isMobile }) {
                 fontWeight: 400,
                 height: 'fit-content',
                 lineHeight: '140%',
-                textAlign: 'center',
+                textAlign: 'left',
                 whiteSpace: 'pre',
                 width: 'fit-content',
               }}
@@ -703,7 +726,7 @@ function FlowsProject({ showTag, isMobile }) {
                 fontWeight: 400,
                 height: 'fit-content',
                 lineHeight: '140%',
-                textAlign: 'center',
+                textAlign: 'left',
                 whiteSpace: 'pre',
                 width: 'fit-content',
               }}
