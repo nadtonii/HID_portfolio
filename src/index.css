@@ -87,6 +87,21 @@ body {
   transform: translateY(0);
 }
 
+.app-container {
+  background-color: #ffffff;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.app-container.mobile-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-inline: 20px;
+  padding-bottom: 20px;
+  min-height: 100dvh;
+}
+
 @media (max-width: 768px) {
   .project-tag {
     display: none !important;
@@ -98,6 +113,41 @@ body {
     max-height: 640px;
     overflow: visible;
     padding-inline: 12px;
+  }
+
+  .mobile-layout {
+    align-items: center;
+  }
+
+  .mobile-nav {
+    position: static;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    padding: 20px 0 0 0;
+    box-sizing: border-box;
+    align-items: flex-start;
+  }
+
+  .mobile-stage {
+    height: calc(100dvh - var(--mobile-nav-height, 0px) - 72px);
+    min-height: 360px;
+    max-height: 640px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .mobile-carousel {
+    padding-inline: 8px;
+    width: 100%;
+    scroll-snap-type: x mandatory;
+    gap: 24px;
+  }
+
+  .mobile-carousel-item {
+    scroll-snap-align: center;
   }
 
   .project-frame {

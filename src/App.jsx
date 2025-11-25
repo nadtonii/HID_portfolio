@@ -44,7 +44,6 @@ export default function App() {
   const touchCurrentXRef = useRef(null);
   const [sidePadding, setSidePadding] = useState({ left: 20, right: 20 });
   const [isMobile, setIsMobile] = useState(false);
-  const [mobileStageHeight, setMobileStageHeight] = useState(null);
   const [desktopStageHeight, setDesktopStageHeight] = useState(null);
   const [navHeight, setNavHeight] = useState(0);
   const navRef = useRef(null);
@@ -109,26 +108,6 @@ export default function App() {
     centerSelected(selectedIndex);
   }, [selectedIndex]);
 
-  const updateMobileStageHeight = (navHeightValue, carouselHeightValue) => {
-    if (!isMobile) return;
-
-    const navHeight = navHeightValue ?? navRef.current?.offsetHeight ?? 0;
-    const carouselHeight =
-      (carouselHeightValue ?? carouselRef.current?.offsetHeight ?? 0) || 0;
-    const viewportHeight = window.visualViewport?.height || window.innerHeight || 0;
-    const paddingTop = navHeight + 8;
-    const paddingBottom = 20;
-    const stackGap = 8;
-    const safetyInset = 6;
-    const availableHeight =
-      viewportHeight - paddingTop - paddingBottom - stackGap - carouselHeight - safetyInset;
-    const baselineHeight =
-      availableHeight > 360 ? Math.min(availableHeight, 640) : availableHeight;
-    const clampedHeight = Math.max(300, baselineHeight);
-
-    setMobileStageHeight(clampedHeight);
-  };
-
   const updateDesktopStageHeight = (navHeightValue, carouselHeightValue) => {
     if (isMobile) return;
 
@@ -164,7 +143,6 @@ export default function App() {
       centerSelected(selectedIndex);
       const measuredNavHeight = updateNavHeight();
       const measuredCarouselHeight = carouselRef.current?.offsetHeight || 0;
-      updateMobileStageHeight(measuredNavHeight, measuredCarouselHeight);
       updateDesktopStageHeight(measuredNavHeight, measuredCarouselHeight);
     };
 
@@ -179,9 +157,7 @@ export default function App() {
     const measuredNavHeight = updateNavHeight();
     const measuredCarouselHeight = carouselRef.current?.offsetHeight || 0;
 
-    if (isMobile) {
-      updateMobileStageHeight(measuredNavHeight, measuredCarouselHeight);
-    } else {
+    if (!isMobile) {
       updateDesktopStageHeight(measuredNavHeight, measuredCarouselHeight);
     }
   }, [isMobile]);
@@ -324,49 +300,66 @@ export default function App() {
     );
   };
 
+  const containerClassName = `app-container${isMobile ? ' mobile-layout' : ''}`;
+  const navClassName = isMobile ? 'mobile-nav' : '';
+
   return (
     <div
-      style={{
-        backgroundColor: '#FFFFFF',
-        height: isMobile ? '100dvh' : '100vh',
-        minHeight: '100vh',
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        overflow: 'hidden',
-        position: 'relative',
-      }}
+      className={containerClassName}
+      style={
+        isMobile
+          ? {
+              '--mobile-nav-height': `${navHeight}px`,
+              overflow: 'hidden',
+              position: 'relative',
+            }
+          : {
+              backgroundColor: '#FFFFFF',
+              height: '100vh',
+              minHeight: '100vh',
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'flex-start',
+              alignItems: 'center',
+              overflow: 'hidden',
+              position: 'relative',
+            }
+      }
     >
       <nav
         ref={navRef}
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          alignItems: 'start',
-          boxSizing: 'border-box',
-          contain: 'layout',
-          display: 'flex',
-          flexDirection: 'column',
-          fontSynthesis: 'none',
-          gap: '8px',
-          height: 'fit-content',
-          justifyContent: 'center',
-          MozOsxFontSmoothing: 'grayscale',
-          paddingBottom: '0px',
-          paddingLeft: '32px',
-          paddingRight: '20px',
-          paddingTop: '20px',
-          WebkitFontSmoothing: 'antialiased',
-          width: '100%',
-          backgroundColor: 'transparent',
-          border: 'none',
-          boxShadow: 'none',
-          zIndex: 10,
-        }}
+        className={navClassName}
+        style={
+          isMobile
+            ? undefined
+            : {
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                alignItems: 'start',
+                boxSizing: 'border-box',
+                contain: 'layout',
+                display: 'flex',
+                flexDirection: 'column',
+                fontSynthesis: 'none',
+                gap: '8px',
+                height: 'fit-content',
+                justifyContent: 'center',
+                MozOsxFontSmoothing: 'grayscale',
+                paddingBottom: '0px',
+                paddingLeft: '32px',
+                paddingRight: '20px',
+                paddingTop: '20px',
+                WebkitFontSmoothing: 'antialiased',
+                width: '100%',
+                backgroundColor: 'transparent',
+                border: 'none',
+                boxShadow: 'none',
+                zIndex: 10,
+              }
+        }
       >
         <div
           style={{
@@ -473,18 +466,16 @@ export default function App() {
           gap: '8px',
           width: '100%',
           flex: '1 1 auto',
-          paddingInline: '20px',
-          paddingBottom: isMobile ? '20px' : '28px',
-          paddingTop: `${(navHeight || 0) + 8}px`,
+          paddingInline: isMobile ? '0' : '20px',
+          paddingBottom: isMobile ? '0' : '28px',
+          paddingTop: isMobile ? '0' : `${(navHeight || 0) + 8}px`,
           boxSizing: 'border-box',
         }}
       >
         <div
-          className="project-stage"
+          className={`project-stage ${isMobile ? 'mobile-stage' : ''}`}
           style={{
-            height: isMobile
-              ? mobileStageHeight || undefined
-              : desktopStageHeight || undefined,
+            height: isMobile ? undefined : desktopStageHeight || undefined,
           }}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
@@ -509,7 +500,7 @@ export default function App() {
 
         <div
           ref={carouselRef}
-          className="project-carousel"
+          className={`project-carousel ${isMobile ? 'mobile-carousel' : ''}`}
           style={{
             alignItems: 'center',
             boxSizing: 'border-box',
@@ -517,7 +508,7 @@ export default function App() {
             display: 'flex',
             flexDirection: 'row',
             fontSynthesis: 'none',
-            gap: '40px',
+            gap: isMobile ? '24px' : '40px',
             height: 'fit-content',
             justifyContent: 'start',
             MozOsxFontSmoothing: 'grayscale',
@@ -538,6 +529,7 @@ export default function App() {
               onMouseDown={() => setPressedIndex(index)}
               onMouseUp={() => setPressedIndex(null)}
               onMouseLeave={() => setPressedIndex(null)}
+              className={isMobile ? 'mobile-carousel-item' : ''}
               style={{
                 background: 'transparent',
                 border: 'none',
