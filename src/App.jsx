@@ -1018,6 +1018,7 @@ function SwitchUIProject({ showTag }) {
   return (
     <div
       style={{
+        alignSelf: 'center',
         alignItems: 'flex-end',
         boxSizing: 'border-box',
         contain: 'layout',
