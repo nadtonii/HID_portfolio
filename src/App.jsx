@@ -287,11 +287,16 @@ export default function App() {
         justifyContent: 'flex-start',
         alignItems: 'center',
         overflow: 'hidden',
+        position: 'relative',
       }}
     >
       <nav
         ref={navRef}
         style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
           alignItems: 'start',
           boxSizing: 'border-box',
           contain: 'layout',
@@ -309,6 +314,9 @@ export default function App() {
           WebkitFontSmoothing: 'antialiased',
           width: '100%',
           backgroundColor: 'transparent',
+          border: 'none',
+          boxShadow: 'none',
+          zIndex: 10,
         }}
       >
         <div
