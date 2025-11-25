@@ -139,7 +139,8 @@ export default function App() {
     const paddingTop = navHeight + 8;
     const paddingBottom = 28;
     const stackGap = 8;
-    const availableHeight = viewportHeight - paddingTop - paddingBottom - stackGap - carouselHeight;
+    const safetyReturn = 8;
+    const availableHeight = viewportHeight - paddingTop - paddingBottom - stackGap - carouselHeight + safetyReturn;
     const baselineHeight = availableHeight > 420
       ? Math.min(availableHeight, 720)
       : availableHeight;
