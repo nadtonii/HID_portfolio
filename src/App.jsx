@@ -22,6 +22,10 @@ const projectDimensions = {
 
 const MOBILE_MAX_WIDTH = 350;
 
+const projectMobileLayouts = {
+  Flows: { mobileWidth: 360, mobileScale: 1 },
+};
+
 export default function App() {
   const SLIDE_DURATION = 600;
   const TAG_DELAY = 50;
@@ -249,7 +253,11 @@ export default function App() {
 
   const renderFrame = (projectName, transitionClass, tagVisible, frameKey) => {
     const baseWidth = projectDimensions[projectName]?.width || 834;
-    const mobileScale = Math.min(1, MOBILE_MAX_WIDTH / baseWidth);
+    const overrides = projectMobileLayouts[projectName] || {};
+    const mobileScale = isMobile
+      ? overrides.mobileScale ?? Math.min(1, MOBILE_MAX_WIDTH / baseWidth)
+      : 1;
+    const mobileWidth = isMobile ? overrides.mobileWidth : undefined;
 
     return (
       <div key={frameKey || projectName} className={`project-frame ${transitionClass}`}>
@@ -258,9 +266,10 @@ export default function App() {
           style={{
             '--project-base-width': baseWidth,
             '--project-mobile-scale': mobileScale,
+            ...(mobileWidth ? { '--project-mobile-width': `${mobileWidth}px` } : {}),
           }}
         >
-          {renderProjectContent(projectName, { showTag: tagVisible })}
+          {renderProjectContent(projectName, { showTag: tagVisible, isMobile })}
         </div>
       </div>
     );
@@ -486,11 +495,11 @@ export default function App() {
 }
 
 function renderProjectContent(projectName, options = {}) {
-  const { showTag = true } = options;
+  const { showTag = true, isMobile = false } = options;
 
   switch (projectName) {
     case 'Flows':
-      return <FlowsProject showTag={showTag} />;
+      return <FlowsProject showTag={showTag} isMobile={isMobile} />;
     case 'Kakimasu':
       return <KakimasuProject showTag={showTag} />;
     case 'Stack':
@@ -524,7 +533,124 @@ function renderProjectContent(projectName, options = {}) {
   }
 }
 
-function FlowsProject({ showTag }) {
+function FlowsProject({ showTag, isMobile }) {
+  if (isMobile) {
+    return (
+      <div
+        style={{
+          alignItems: 'center',
+          boxSizing: 'border-box',
+          contain: 'layout',
+          display: 'flex',
+          flexDirection: 'column',
+          fontSynthesis: 'none',
+          gap: 5,
+          height: 'fit-content',
+          justifyContent: 'start',
+          MozOsxFontSmoothing: 'grayscale',
+          WebkitFontSmoothing: 'antialiased',
+          width: 'fit-content',
+        }}
+      >
+        <div
+          style={{
+            boxSizing: 'border-box',
+            contain: 'layout',
+            flexShrink: '0',
+            height: '276px',
+            width: '360px',
+            position: 'relative',
+          }}
+        >
+          <div
+            style={{
+              backgroundImage:
+                'url(https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXV3CVX9NTXB88Y3K21XW86.png)',
+              backgroundPosition: 'center',
+              backgroundSize: 'cover',
+              boxSizing: 'border-box',
+              height: '250px',
+              left: '0',
+              position: 'absolute',
+              top: '0',
+              translate: '12px 13px',
+              width: '336px',
+            }}
+          />
+          <div
+            style={{
+              backgroundImage:
+                'url(https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXSWRQE7V2HAJS10DNMFAVH.png)',
+              backgroundPosition: 'center',
+              backgroundSize: 'cover',
+              boxSizing: 'border-box',
+              height: '276px',
+              left: '0',
+              position: 'absolute',
+              top: '0',
+              width: '360px',
+            }}
+          />
+        </div>
+        {showTag && (
+          <div
+            style={{
+              alignItems: 'center',
+              boxSizing: 'border-box',
+              contain: 'layout',
+              display: 'flex',
+              flexDirection: 'column',
+              flexShrink: '0',
+              height: 'fit-content',
+              justifyContent: 'center',
+              paddingBlock: '9px',
+              width: 'fit-content',
+            }}
+          >
+            <div
+              style={{
+                boxSizing: 'border-box',
+                color: '#000000',
+                flexShrink: '0',
+                fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+                fontSize: '12px',
+                fontVariationSettings:
+                  '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
+                fontWeight: 400,
+                height: 'fit-content',
+                lineHeight: '140%',
+                textAlign: 'center',
+                whiteSpace: 'pre',
+                width: 'fit-content',
+              }}
+            >
+              2026
+            </div>
+            <div
+              style={{
+                boxSizing: 'border-box',
+                color: '#C4C4C4',
+                flexShrink: '0',
+                fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+                fontSize: '12px',
+                fontVariationSettings:
+                  '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
+                fontWeight: 400,
+                height: 'fit-content',
+                lineHeight: '140%',
+                textAlign: 'center',
+                whiteSpace: 'pre',
+                width: 'fit-content',
+              }}
+            >
+              {'Product Design,\nWeb development, AI'}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div
       style={{

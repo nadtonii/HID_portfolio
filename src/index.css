@@ -107,12 +107,16 @@ body {
   .project-content-wrapper {
     --project-base-width: 834;
     --project-mobile-scale: 1;
-    max-width: min(350px, 94vw);
-    width: min(350px, 94vw);
+    --project-mobile-width: min(350px, 94vw);
+    --project-mobile-padding: 6px 4px;
+    max-width: var(--project-mobile-width, min(350px, 94vw));
+    width: var(--project-mobile-width, min(350px, 94vw));
     margin-inline: auto;
-    padding: 6px 4px;
-    transform: scale(var(--project-mobile-scale));
+    padding: var(--project-mobile-padding, 6px 4px);
+    transform: scale(var(--project-mobile-scale, 1));
     transform-origin: center center;
+    align-items: center;
+    justify-content: center;
   }
 
   html,
