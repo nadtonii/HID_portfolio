@@ -14,6 +14,7 @@ export default function App() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const carouselRef = useRef(null);
   const itemRefs = useRef([]);
+  const animationFrameRef = useRef(null);
   const [sidePadding, setSidePadding] = useState({ left: 20, right: 20 });
 
   const calculateSidePadding = () => {
@@ -43,7 +44,33 @@ export default function App() {
     const maxScroll = carousel.scrollWidth - carousel.clientWidth;
     const clampedScroll = Math.min(Math.max(desiredScroll, 0), maxScroll);
 
-    carousel.scrollTo({ left: clampedScroll, behavior: 'smooth' });
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+    }
+
+    const start = carousel.scrollLeft;
+    const change = clampedScroll - start;
+    const duration = 500;
+    const startTime = performance.now();
+
+    const easeInOutCubic = (t) =>
+      t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+    const animate = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const easedProgress = easeInOutCubic(progress);
+
+      carousel.scrollLeft = start + change * easedProgress;
+
+      if (progress < 1) {
+        animationFrameRef.current = requestAnimationFrame(animate);
+      } else {
+        animationFrameRef.current = null;
+      }
+    };
+
+    animationFrameRef.current = requestAnimationFrame(animate);
   };
 
   useEffect(() => {
@@ -65,6 +92,14 @@ export default function App() {
       window.removeEventListener('resize', handleResize);
     };
   }, [selectedIndex]);
+
+  useEffect(() => {
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div
@@ -203,7 +238,7 @@ export default function App() {
           height: 'fit-content',
           justifyContent: 'start',
           MozOsxFontSmoothing: 'grayscale',
-          paddingBlock: '20px',
+          paddingBlock: '20px 0px',
           paddingInline: `${sidePadding.left}px ${sidePadding.right}px`,
           WebkitFontSmoothing: 'antialiased',
           width: '100%',
