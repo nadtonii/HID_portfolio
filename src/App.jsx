@@ -10,6 +10,22 @@ const projects = [
   'Aurora Retreat',
 ];
 
+const projectDimensions = {
+  Flows: { width: 834 },
+  Kakimasu: { width: 312 },
+  Stack: { width: 312 },
+  Voicenotes: { width: 312 },
+  WorkFeed: { width: 1033 },
+  'Switch UI': { width: 824 },
+  'Aurora Retreat': { width: 1033 },
+};
+
+const MOBILE_MAX_WIDTH = 350;
+
+const projectMobileLayouts = {
+  Flows: { mobileWidth: 360, mobileScale: 1 },
+};
+
 export default function App() {
   const SLIDE_DURATION = 600;
   const TAG_DELAY = 50;
@@ -24,7 +40,14 @@ export default function App() {
   const animationFrameRef = useRef(null);
   const exitTimeoutRef = useRef(null);
   const tagTimeoutRef = useRef(null);
+  const touchStartXRef = useRef(null);
+  const touchCurrentXRef = useRef(null);
   const [sidePadding, setSidePadding] = useState({ left: 20, right: 20 });
+  const [isMobile, setIsMobile] = useState(false);
+  const [mobileStageHeight, setMobileStageHeight] = useState(null);
+  const [desktopStageHeight, setDesktopStageHeight] = useState(null);
+  const [navHeight, setNavHeight] = useState(0);
+  const navRef = useRef(null);
 
   const calculateSidePadding = () => {
     const carousel = carouselRef.current;
@@ -86,6 +109,52 @@ export default function App() {
     centerSelected(selectedIndex);
   }, [selectedIndex]);
 
+  const updateMobileStageHeight = (navHeightValue, carouselHeightValue) => {
+    if (!isMobile) return;
+
+    const navHeight = navHeightValue ?? navRef.current?.offsetHeight ?? 0;
+    const carouselHeight =
+      (carouselHeightValue ?? carouselRef.current?.offsetHeight ?? 0) || 0;
+    const viewportHeight = window.visualViewport?.height || window.innerHeight || 0;
+    const paddingTop = navHeight + 8;
+    const paddingBottom = 20;
+    const stackGap = 8;
+    const safetyInset = 6;
+    const availableHeight =
+      viewportHeight - paddingTop - paddingBottom - stackGap - carouselHeight - safetyInset;
+    const baselineHeight =
+      availableHeight > 360 ? Math.min(availableHeight, 640) : availableHeight;
+    const clampedHeight = Math.max(300, baselineHeight);
+
+    setMobileStageHeight(clampedHeight);
+  };
+
+  const updateDesktopStageHeight = (navHeightValue, carouselHeightValue) => {
+    if (isMobile) return;
+
+    const navHeight = navHeightValue ?? navRef.current?.offsetHeight ?? 0;
+    const carouselHeight =
+      (carouselHeightValue ?? carouselRef.current?.offsetHeight ?? 0) || 0;
+    const viewportHeight = window.innerHeight || 0;
+    const paddingTop = navHeight + 8;
+    const paddingBottom = 28;
+    const stackGap = 8;
+    const safetyReturn = 8;
+    const availableHeight = viewportHeight - paddingTop - paddingBottom - stackGap - carouselHeight + safetyReturn;
+    const baselineHeight = availableHeight > 420
+      ? Math.min(availableHeight, 720)
+      : availableHeight;
+    const clampedHeight = Math.max(320, baselineHeight);
+
+    setDesktopStageHeight(clampedHeight);
+  };
+
+  const updateNavHeight = () => {
+    const navMeasuredHeight = navRef.current?.offsetHeight || 0;
+    setNavHeight(navMeasuredHeight);
+    return navMeasuredHeight;
+  };
+
   useEffect(() => {
     calculateSidePadding();
     centerSelected(selectedIndex);
@@ -93,6 +162,10 @@ export default function App() {
     const handleResize = () => {
       calculateSidePadding();
       centerSelected(selectedIndex);
+      const measuredNavHeight = updateNavHeight();
+      const measuredCarouselHeight = carouselRef.current?.offsetHeight || 0;
+      updateMobileStageHeight(measuredNavHeight, measuredCarouselHeight);
+      updateDesktopStageHeight(measuredNavHeight, measuredCarouselHeight);
     };
 
     window.addEventListener('resize', handleResize);
@@ -100,7 +173,18 @@ export default function App() {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [selectedIndex]);
+  }, [selectedIndex, isMobile]);
+
+  useEffect(() => {
+    const measuredNavHeight = updateNavHeight();
+    const measuredCarouselHeight = carouselRef.current?.offsetHeight || 0;
+
+    if (isMobile) {
+      updateMobileStageHeight(measuredNavHeight, measuredCarouselHeight);
+    } else {
+      updateDesktopStageHeight(measuredNavHeight, measuredCarouselHeight);
+    }
+  }, [isMobile]);
 
   useEffect(() => {
     return () => {
@@ -115,6 +199,21 @@ export default function App() {
       if (tagTimeoutRef.current) {
         clearTimeout(tagTimeoutRef.current);
       }
+    };
+  }, []);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
+
+    const handleMediaChange = (event) => {
+      setIsMobile(event.matches);
+    };
+
+    setIsMobile(mediaQuery.matches);
+    mediaQuery.addEventListener('change', handleMediaChange);
+
+    return () => {
+      mediaQuery.removeEventListener('change', handleMediaChange);
     };
   }, []);
 
@@ -164,35 +263,109 @@ export default function App() {
     }, SLIDE_DURATION + TAG_DELAY);
   };
 
+  const handleTouchStart = (event) => {
+    if (event.touches.length !== 1) return;
+
+    const { clientX } = event.touches[0];
+    touchStartXRef.current = clientX;
+    touchCurrentXRef.current = clientX;
+  };
+
+  const handleTouchMove = (event) => {
+    if (!touchStartXRef.current) return;
+
+    touchCurrentXRef.current = event.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStartXRef.current || touchCurrentXRef.current === null) return;
+
+    const deltaX = touchCurrentXRef.current - touchStartXRef.current;
+    const threshold = 50;
+
+    if (Math.abs(deltaX) > threshold) {
+      if (deltaX < 0 && selectedIndex < projects.length - 1) {
+        handleSelectProject(selectedIndex + 1);
+      } else if (deltaX > 0 && selectedIndex > 0) {
+        handleSelectProject(selectedIndex - 1);
+      }
+    }
+
+    touchStartXRef.current = null;
+    touchCurrentXRef.current = null;
+  };
+
+  const renderFrame = (projectName, transitionClass, tagVisible, frameKey) => {
+    const baseWidth = projectDimensions[projectName]?.width || 834;
+    const overrides = projectMobileLayouts[projectName] || {};
+    const mobileScale = isMobile
+      ? overrides.mobileScale ?? Math.min(1, MOBILE_MAX_WIDTH / baseWidth)
+      : 1;
+    const mobileWidth = isMobile ? overrides.mobileWidth : undefined;
+    const desktopBottomPadding =
+      !isMobile && ['Kakimasu', 'Stack', 'Voicenotes'].includes(projectName)
+        ? '2px'
+        : undefined;
+
+    return (
+      <div key={frameKey || projectName} className={`project-frame ${transitionClass}`}>
+        <div
+          className="project-content-wrapper"
+          style={{
+            '--project-base-width': baseWidth,
+            '--project-mobile-scale': mobileScale,
+            ...(mobileWidth ? { '--project-mobile-width': `${mobileWidth}px` } : {}),
+            ...(desktopBottomPadding ? { paddingBottom: desktopBottomPadding } : {}),
+          }}
+        >
+          {renderProjectContent(projectName, { showTag: tagVisible, isMobile })}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div
       style={{
         backgroundColor: '#FFFFFF',
-        height: '811px',
+        height: isMobile ? '100dvh' : '100vh',
+        minHeight: '100vh',
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-start',
         alignItems: 'center',
         overflow: 'hidden',
+        position: 'relative',
       }}
     >
       <nav
+        ref={navRef}
         style={{
-          alignItems: 'center',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          alignItems: 'start',
           boxSizing: 'border-box',
           contain: 'layout',
           display: 'flex',
-          flexDirection: 'row',
+          flexDirection: 'column',
           fontSynthesis: 'none',
-          gap: '16px',
+          gap: '8px',
           height: 'fit-content',
-          justifyContent: 'start',
+          justifyContent: 'center',
           MozOsxFontSmoothing: 'grayscale',
-          paddingBlock: '20px',
-          paddingInline: '20px',
+          paddingBottom: '0px',
+          paddingLeft: '32px',
+          paddingRight: '20px',
+          paddingTop: '20px',
           WebkitFontSmoothing: 'antialiased',
           width: '100%',
+          backgroundColor: 'transparent',
+          border: 'none',
+          boxShadow: 'none',
+          zIndex: 10,
         }}
       >
         <div
@@ -201,13 +374,11 @@ export default function App() {
             boxSizing: 'border-box',
             contain: 'layout',
             display: 'flex',
-            flexBasis: '0px',
             flexDirection: 'column',
-            flexGrow: '1',
             flexShrink: '0',
             height: 'fit-content',
             justifyContent: 'start',
-            width: 'auto',
+            width: 'fit-content',
           }}
         >
           <div
@@ -246,7 +417,8 @@ export default function App() {
             width: 'fit-content',
           }}
         >
-          <div
+          <a
+            href="mailto:toni@nad.com"
             style={{
               alignItems: 'center',
               boxSizing: 'border-box',
@@ -268,11 +440,15 @@ export default function App() {
                 boxSizing: 'border-box',
                 flexShrink: '0',
                 height: '19px',
+                opacity: '10%',
                 width: '19px',
               }}
             />
-          </div>
-          <div
+          </a>
+          <a
+            href="https://www.linkedin.com"
+            target="_blank"
+            rel="noreferrer"
             style={{
               backgroundImage:
                 'url(https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXS4XGXBVXT4CK0NG024Y15.svg)',
@@ -281,6 +457,7 @@ export default function App() {
               boxSizing: 'border-box',
               flexShrink: '0',
               height: '24px',
+              opacity: '10%',
               width: '24px',
             }}
           />
@@ -289,100 +466,113 @@ export default function App() {
 
       <div
         style={{
-          alignItems: 'center',
           display: 'flex',
-          flex: '1 1 0%',
-          justifyContent: 'center',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: isMobile ? 'flex-start' : 'center',
+          gap: '8px',
           width: '100%',
+          flex: '1 1 auto',
           paddingInline: '20px',
-        }}
-      >
-        <div className="project-stage">
-          {exitingIndex !== null && (
-            <div
-              className={`project-frame ${
-                transitionDirection === 1 ? 'exit-to-left' : 'exit-to-right'
-              }`}
-            >
-              {renderProjectContent(projects[exitingIndex], { showTag: false })}
-            </div>
-          )}
-          <div
-            key={projects[selectedIndex]}
-            className={`project-frame ${
-              transitionDirection === 1 ? 'enter-from-right' : 'enter-from-left'
-            }`}
-          >
-            {renderProjectContent(projects[selectedIndex], { showTag })}
-          </div>
-        </div>
-      </div>
-
-      <div
-        ref={carouselRef}
-        className="project-carousel"
-        style={{
-          alignItems: 'center',
+          paddingBottom: isMobile ? '20px' : '28px',
+          paddingTop: `${(navHeight || 0) + 8}px`,
           boxSizing: 'border-box',
-          contain: 'layout',
-          display: 'flex',
-          flexDirection: 'row',
-          fontSynthesis: 'none',
-          gap: '40px',
-          height: 'fit-content',
-          justifyContent: 'start',
-          MozOsxFontSmoothing: 'grayscale',
-          paddingBlock: '20px 0px',
-          paddingInline: `${sidePadding.left}px ${sidePadding.right}px`,
-          WebkitFontSmoothing: 'antialiased',
-          width: '100%',
-          overflowX: 'auto',
         }}
       >
-        {projects.map((project, index) => (
-          <button
-            key={project}
-            ref={(element) => {
-              itemRefs.current[index] = element;
-            }}
-            onClick={() => handleSelectProject(index)}
-            onMouseDown={() => setPressedIndex(index)}
-            onMouseUp={() => setPressedIndex(null)}
-            onMouseLeave={() => setPressedIndex(null)}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              padding: 0,
-              boxSizing: 'border-box',
-              color: selectedIndex === index ? '#000000' : '#C4C4C4',
-              flexShrink: 0,
-              fontFamily: '"Google Sans Flex", system-ui, sans-serif',
-              fontSize: '20px',
-              fontVariationSettings:
-                '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
-              fontWeight: 400,
-              lineHeight: '140%',
-              whiteSpace: 'pre',
-              width: 'fit-content',
-              cursor: 'pointer',
-              transition: 'color 150ms ease, transform 120ms ease',
-              transform: pressedIndex === index ? 'scale(0.94)' : 'scale(1)',
-            }}
-          >
-            {project}
-          </button>
-        ))}
+        <div
+          className="project-stage"
+          style={{
+            height: isMobile
+              ? mobileStageHeight || undefined
+              : desktopStageHeight || undefined,
+          }}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          onTouchCancel={handleTouchEnd}
+        >
+          {exitingIndex !== null && (
+            renderFrame(
+              projects[exitingIndex],
+              transitionDirection === 1 ? 'exit-to-left' : 'exit-to-right',
+              false,
+              `${projects[exitingIndex]}-exit`
+            )
+          )}
+          {renderFrame(
+            projects[selectedIndex],
+            transitionDirection === 1 ? 'enter-from-right' : 'enter-from-left',
+            showTag,
+            projects[selectedIndex]
+          )}
+        </div>
+
+        <div
+          ref={carouselRef}
+          className="project-carousel"
+          style={{
+            alignItems: 'center',
+            boxSizing: 'border-box',
+            contain: 'layout',
+            display: 'flex',
+            flexDirection: 'row',
+            fontSynthesis: 'none',
+            gap: '40px',
+            height: 'fit-content',
+            justifyContent: 'start',
+            MozOsxFontSmoothing: 'grayscale',
+            paddingBlock: '20px',
+            paddingInline: `${sidePadding.left}px ${sidePadding.right}px`,
+            WebkitFontSmoothing: 'antialiased',
+            width: '100%',
+            overflowX: 'auto',
+          }}
+        >
+          {projects.map((project, index) => (
+            <button
+              key={project}
+              ref={(element) => {
+                itemRefs.current[index] = element;
+              }}
+              onClick={() => handleSelectProject(index)}
+              onMouseDown={() => setPressedIndex(index)}
+              onMouseUp={() => setPressedIndex(null)}
+              onMouseLeave={() => setPressedIndex(null)}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                padding: 0,
+                boxSizing: 'border-box',
+                color: selectedIndex === index ? '#000000' : '#C4C4C4',
+                flexShrink: 0,
+                fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+                fontSize: '20px',
+                fontVariationSettings:
+                  '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
+                fontWeight: 400,
+                lineHeight: '140%',
+                whiteSpace: 'pre',
+                width: 'fit-content',
+                cursor: 'pointer',
+                transition: 'color 150ms ease, transform 120ms ease',
+                transform: pressedIndex === index ? 'scale(0.94)' : 'scale(1)',
+              }}
+            >
+              {project}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
 }
 
 function renderProjectContent(projectName, options = {}) {
-  const { showTag = true } = options;
+  const { showTag = true, isMobile = false } = options;
 
   switch (projectName) {
     case 'Flows':
-      return <FlowsProject showTag={showTag} />;
+      return <FlowsProject showTag={showTag} isMobile={isMobile} />;
     case 'Kakimasu':
       return <KakimasuProject showTag={showTag} />;
     case 'Stack':
@@ -416,7 +606,124 @@ function renderProjectContent(projectName, options = {}) {
   }
 }
 
-function FlowsProject({ showTag }) {
+function FlowsProject({ showTag, isMobile }) {
+  if (isMobile) {
+    return (
+      <div
+        style={{
+          alignItems: 'center',
+          boxSizing: 'border-box',
+          contain: 'layout',
+          display: 'flex',
+          flexDirection: 'column',
+          fontSynthesis: 'none',
+          gap: 5,
+          height: 'fit-content',
+          justifyContent: 'start',
+          MozOsxFontSmoothing: 'grayscale',
+          WebkitFontSmoothing: 'antialiased',
+          width: 'fit-content',
+        }}
+      >
+        <div
+          style={{
+            boxSizing: 'border-box',
+            contain: 'layout',
+            flexShrink: '0',
+            height: '276px',
+            width: '360px',
+            position: 'relative',
+          }}
+        >
+          <div
+            style={{
+              backgroundImage:
+                'url(https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXV3CVX9NTXB88Y3K21XW86.png)',
+              backgroundPosition: 'center',
+              backgroundSize: 'cover',
+              boxSizing: 'border-box',
+              height: '250px',
+              left: '0',
+              position: 'absolute',
+              top: '0',
+              translate: '12px 13px',
+              width: '336px',
+            }}
+          />
+          <div
+            style={{
+              backgroundImage:
+                'url(https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXSWRQE7V2HAJS10DNMFAVH.png)',
+              backgroundPosition: 'center',
+              backgroundSize: 'cover',
+              boxSizing: 'border-box',
+              height: '276px',
+              left: '0',
+              position: 'absolute',
+              top: '0',
+              width: '360px',
+            }}
+          />
+        </div>
+        {showTag && (
+          <div
+            style={{
+              alignItems: 'center',
+              boxSizing: 'border-box',
+              contain: 'layout',
+              display: 'flex',
+              flexDirection: 'column',
+              flexShrink: '0',
+              height: 'fit-content',
+              justifyContent: 'center',
+              paddingBlock: '9px',
+              width: 'fit-content',
+            }}
+          >
+            <div
+              style={{
+                boxSizing: 'border-box',
+                color: '#000000',
+                flexShrink: '0',
+                fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+                fontSize: '12px',
+                fontVariationSettings:
+                  '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
+                fontWeight: 400,
+                height: 'fit-content',
+                lineHeight: '140%',
+                textAlign: 'center',
+                whiteSpace: 'pre',
+                width: 'fit-content',
+              }}
+            >
+              2026
+            </div>
+            <div
+              style={{
+                boxSizing: 'border-box',
+                color: '#C4C4C4',
+                flexShrink: '0',
+                fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+                fontSize: '12px',
+                fontVariationSettings:
+                  '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
+                fontWeight: 400,
+                height: 'fit-content',
+                lineHeight: '140%',
+                textAlign: 'center',
+                whiteSpace: 'pre',
+                width: 'fit-content',
+              }}
+            >
+              {'Product Design,\nWeb development, AI'}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div
       style={{
@@ -1210,18 +1517,45 @@ function AuroraRetreatProject({ showTag }) {
           WebkitFontSmoothing: 'antialiased',
           width: 'fit-content',
           bottom: '0',
-          color: '#C4C4C4',
-          fontFamily: '"Google Sans Flex", system-ui, sans-serif',
-          fontSize: '12px',
-          fontVariationSettings:
-            '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
-          fontWeight: 400,
-          lineHeight: '140%',
-          whiteSpace: 'pre',
         }}
         className={`project-tag ${showTag ? 'visible' : ''}`}
       >
-        Aurora Retreat
+        <div
+          style={{
+            boxSizing: 'border-box',
+            color: '#000000',
+            flexShrink: '0',
+            fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+            fontSize: '12px',
+            fontVariationSettings:
+              '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
+            fontWeight: 400,
+            height: 'fit-content',
+            lineHeight: '140%',
+            whiteSpace: 'pre',
+            width: 'fit-content',
+          }}
+        >
+          2023
+        </div>
+        <div
+          style={{
+            boxSizing: 'border-box',
+            color: '#C4C4C4',
+            flexShrink: '0',
+            fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+            fontSize: '12px',
+            fontVariationSettings:
+              '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
+            fontWeight: 400,
+            height: 'fit-content',
+            lineHeight: '140%',
+            whiteSpace: 'pre',
+            width: 'fit-content',
+          }}
+        >
+          {'Product Design,\nPlayground, Braindump'}
+        </div>
       </div>
     </div>
   );

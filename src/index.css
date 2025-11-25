@@ -9,18 +9,17 @@
 html,
 body {
   margin: 0;
-  height: 811px;
+  min-height: 100vh;
   background-color: #ffffff;
   overflow: hidden;
 }
 
 body {
-  height: 811px;
   font-family: 'Google Sans Flex', system-ui, sans-serif;
 }
 
 #root {
-  height: 100%;
+  min-height: 100vh;
 }
 
 .project-carousel {
@@ -35,7 +34,7 @@ body {
   position: relative;
   width: 100%;
   max-width: 100%;
-  height: 640px;
+  height: clamp(420px, 70vh, 640px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -51,6 +50,14 @@ body {
   width: 100%;
   height: 100%;
   transform-origin: center center;
+}
+
+.project-content-wrapper {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 
 .project-frame.enter-from-right {
@@ -78,6 +85,51 @@ body {
 .project-tag.visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  .project-tag {
+    display: none !important;
+  }
+
+  .project-stage {
+    height: auto;
+    min-height: 360px;
+    max-height: 640px;
+    overflow: visible;
+    padding-inline: 12px;
+  }
+
+  .project-frame {
+    align-items: center;
+  }
+
+  .project-content-wrapper {
+    --project-base-width: 834;
+    --project-mobile-scale: 1;
+    --project-mobile-width: min(350px, 94vw);
+    --project-mobile-padding: 6px 4px;
+    max-width: var(--project-mobile-width, min(350px, 94vw));
+    width: var(--project-mobile-width, min(350px, 94vw));
+    margin-inline: auto;
+    padding: var(--project-mobile-padding, 6px 4px);
+    transform: scale(var(--project-mobile-scale, 1));
+    transform-origin: center center;
+    align-items: center;
+    justify-content: center;
+  }
+
+  html,
+  body {
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  #root {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
 }
 
 @keyframes slideInFromRight {
