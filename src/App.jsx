@@ -45,6 +45,7 @@ export default function App() {
   const [sidePadding, setSidePadding] = useState({ left: 20, right: 20 });
   const [isMobile, setIsMobile] = useState(false);
   const [mobileStageHeight, setMobileStageHeight] = useState(null);
+  const [desktopStageHeight, setDesktopStageHeight] = useState(null);
   const [navHeight, setNavHeight] = useState(0);
   const navRef = useRef(null);
 
@@ -108,17 +109,42 @@ export default function App() {
     centerSelected(selectedIndex);
   }, [selectedIndex]);
 
-  const updateMobileStageHeight = (navHeightValue) => {
+  const updateMobileStageHeight = (navHeightValue, carouselHeightValue) => {
     if (!isMobile) return;
 
-    const navHeight =
-      navHeightValue ?? navRef.current?.offsetHeight ?? 0;
-    const carouselHeight = carouselRef.current?.offsetHeight || 0;
+    const navHeight = navHeightValue ?? navRef.current?.offsetHeight ?? 0;
+    const carouselHeight =
+      (carouselHeightValue ?? carouselRef.current?.offsetHeight ?? 0) || 0;
     const viewportHeight = window.visualViewport?.height || window.innerHeight || 0;
-    const availableHeight = viewportHeight - navHeight - carouselHeight;
-    const clampedHeight = Math.max(360, Math.min(availableHeight, 640));
+    const paddingTop = navHeight + 8;
+    const paddingBottom = 20;
+    const stackGap = 8;
+    const availableHeight = viewportHeight - paddingTop - paddingBottom - stackGap - carouselHeight;
+    const baselineHeight = availableHeight > 360
+      ? Math.min(availableHeight, 640)
+      : availableHeight;
+    const clampedHeight = Math.max(300, baselineHeight);
 
     setMobileStageHeight(clampedHeight);
+  };
+
+  const updateDesktopStageHeight = (navHeightValue, carouselHeightValue) => {
+    if (isMobile) return;
+
+    const navHeight = navHeightValue ?? navRef.current?.offsetHeight ?? 0;
+    const carouselHeight =
+      (carouselHeightValue ?? carouselRef.current?.offsetHeight ?? 0) || 0;
+    const viewportHeight = window.innerHeight || 0;
+    const paddingTop = navHeight + 8;
+    const paddingBottom = 28;
+    const stackGap = 8;
+    const availableHeight = viewportHeight - paddingTop - paddingBottom - stackGap - carouselHeight;
+    const baselineHeight = availableHeight > 420
+      ? Math.min(availableHeight, 720)
+      : availableHeight;
+    const clampedHeight = Math.max(320, baselineHeight);
+
+    setDesktopStageHeight(clampedHeight);
   };
 
   const updateNavHeight = () => {
@@ -135,7 +161,9 @@ export default function App() {
       calculateSidePadding();
       centerSelected(selectedIndex);
       const measuredNavHeight = updateNavHeight();
-      updateMobileStageHeight(measuredNavHeight);
+      const measuredCarouselHeight = carouselRef.current?.offsetHeight || 0;
+      updateMobileStageHeight(measuredNavHeight, measuredCarouselHeight);
+      updateDesktopStageHeight(measuredNavHeight, measuredCarouselHeight);
     };
 
     window.addEventListener('resize', handleResize);
@@ -147,9 +175,12 @@ export default function App() {
 
   useEffect(() => {
     const measuredNavHeight = updateNavHeight();
+    const measuredCarouselHeight = carouselRef.current?.offsetHeight || 0;
 
     if (isMobile) {
-      updateMobileStageHeight(measuredNavHeight);
+      updateMobileStageHeight(measuredNavHeight, measuredCarouselHeight);
+    } else {
+      updateDesktopStageHeight(measuredNavHeight, measuredCarouselHeight);
     }
   }, [isMobile]);
 
@@ -443,7 +474,11 @@ export default function App() {
       >
         <div
           className="project-stage"
-          style={{ height: isMobile && mobileStageHeight ? mobileStageHeight : undefined }}
+          style={{
+            height: isMobile
+              ? mobileStageHeight || undefined
+              : desktopStageHeight || undefined,
+          }}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
