@@ -27,6 +27,7 @@ export default function App() {
   const touchStartXRef = useRef(null);
   const touchCurrentXRef = useRef(null);
   const [sidePadding, setSidePadding] = useState({ left: 20, right: 20 });
+  const [isMobile, setIsMobile] = useState(false);
 
   const calculateSidePadding = () => {
     const carousel = carouselRef.current;
@@ -121,6 +122,21 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
+
+    const handleMediaChange = (event) => {
+      setIsMobile(event.matches);
+    };
+
+    setIsMobile(mediaQuery.matches);
+    mediaQuery.addEventListener('change', handleMediaChange);
+
+    return () => {
+      mediaQuery.removeEventListener('change', handleMediaChange);
+    };
+  }, []);
+
+  useEffect(() => {
     const carousel = carouselRef.current;
 
     if (!carousel) return undefined;
@@ -202,8 +218,8 @@ export default function App() {
     <div
       style={{
         backgroundColor: '#FFFFFF',
-        height: '100dvh',
-        minHeight: '100vh',
+        height: isMobile ? '100dvh' : '811px',
+        minHeight: isMobile ? '100vh' : 'auto',
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
@@ -373,7 +389,7 @@ export default function App() {
           height: 'fit-content',
           justifyContent: 'start',
           MozOsxFontSmoothing: 'grayscale',
-          paddingBlock: '20px 0px',
+          paddingBlock: '20px',
           paddingInline: `${sidePadding.left}px ${sidePadding.right}px`,
           WebkitFontSmoothing: 'antialiased',
           width: '100%',
