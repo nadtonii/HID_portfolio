@@ -24,6 +24,12 @@ const MOBILE_MAX_WIDTH = 350;
 
 const projectMobileLayouts = {
   Flows: { mobileWidth: 360, mobileScale: 1 },
+  Kakimasu: { mobileWidth: 312, mobileScale: 1 },
+  Stack: { mobileWidth: 312, mobileScale: 1 },
+  Voicenotes: { mobileWidth: 312, mobileScale: 1 },
+  WorkFeed: { mobileWidth: 350, mobileScale: 0.34 },
+  'Switch UI': { mobileWidth: 350, mobileScale: 0.425 },
+  'Aurora Retreat': { mobileWidth: 350, mobileScale: 0.34 },
 };
 
 export default function App() {
@@ -298,10 +304,11 @@ export default function App() {
   const renderFrame = (projectName, transitionClass, tagVisible, frameKey) => {
     const baseWidth = projectDimensions[projectName]?.width || 834;
     const overrides = projectMobileLayouts[projectName] || {};
-    const mobileScale = isMobile
-      ? overrides.mobileScale ?? Math.min(1, MOBILE_MAX_WIDTH / baseWidth)
-      : 1;
     const mobileWidth = isMobile ? overrides.mobileWidth : undefined;
+    const targetMobileWidth = mobileWidth ?? MOBILE_MAX_WIDTH;
+    const mobileScale = isMobile
+      ? overrides.mobileScale ?? Math.min(1, targetMobileWidth / baseWidth)
+      : 1;
     const desktopBottomPadding =
       !isMobile && ['Kakimasu', 'Stack', 'Voicenotes'].includes(projectName)
         ? '2px'
