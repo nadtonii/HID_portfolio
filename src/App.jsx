@@ -1,10 +1,138 @@
+import { useEffect, useRef, useState } from 'react';
+
+const projects = [
+  'Flows',
+  'Kakimasu',
+  'Stack',
+  'Voicenotes',
+  'WorkFeed',
+  'Switch UI',
+  'Aurora Retreat',
+];
+
 export default function App() {
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const carouselRef = useRef(null);
+  const itemRefs = useRef([]);
+  const animationFrameRef = useRef(null);
+  const [sidePadding, setSidePadding] = useState({ left: 20, right: 20 });
+
+  const calculateSidePadding = () => {
+    const carousel = carouselRef.current;
+    const items = itemRefs.current;
+
+    if (!carousel || !items.length) return;
+
+    const halfViewport = carousel.clientWidth / 2;
+    const firstHalf = items[0]?.offsetWidth / 2 || 0;
+    const lastHalf = items[items.length - 1]?.offsetWidth / 2 || 0;
+
+    setSidePadding({
+      left: Math.max(halfViewport - firstHalf, 20),
+      right: Math.max(halfViewport - lastHalf, 20),
+    });
+  };
+
+  const centerSelected = (index) => {
+    const carousel = carouselRef.current;
+    const target = itemRefs.current[index];
+
+    if (!carousel || !target) return;
+
+    const targetCenter = target.offsetLeft + target.offsetWidth / 2;
+    const desiredScroll = targetCenter - carousel.clientWidth / 2;
+    const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+    const clampedScroll = Math.min(Math.max(desiredScroll, 0), maxScroll);
+
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+    }
+
+    const start = carousel.scrollLeft;
+    const change = clampedScroll - start;
+    const duration = 500;
+    const startTime = performance.now();
+
+    const easeInOutCubic = (t) =>
+      t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+    const animate = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const easedProgress = easeInOutCubic(progress);
+
+      carousel.scrollLeft = start + change * easedProgress;
+
+      if (progress < 1) {
+        animationFrameRef.current = requestAnimationFrame(animate);
+      } else {
+        animationFrameRef.current = null;
+      }
+    };
+
+    animationFrameRef.current = requestAnimationFrame(animate);
+  };
+
+  useEffect(() => {
+    centerSelected(selectedIndex);
+  }, [selectedIndex]);
+
+  useEffect(() => {
+    calculateSidePadding();
+    centerSelected(selectedIndex);
+
+    const handleResize = () => {
+      calculateSidePadding();
+      centerSelected(selectedIndex);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [selectedIndex]);
+
+  useEffect(() => {
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const carousel = carouselRef.current;
+
+    if (!carousel) return undefined;
+
+    const handleWheel = (event) => {
+      const delta = event.deltaY || event.deltaX;
+
+      if (!delta) return;
+
+      event.preventDefault();
+      carousel.scrollLeft += delta;
+    };
+
+    carousel.addEventListener('wheel', handleWheel, { passive: false });
+
+    return () => {
+      carousel.removeEventListener('wheel', handleWheel, { passive: false });
+    };
+  }, []);
+
   return (
     <div
       style={{
         backgroundColor: '#FFFFFF',
-        minHeight: '100vh',
+        height: '811px',
         width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        overflow: 'hidden',
       }}
     >
       <nav
@@ -116,6 +244,58 @@ export default function App() {
           />
         </div>
       </nav>
+
+      <div
+        ref={carouselRef}
+        className="project-carousel"
+        style={{
+          alignItems: 'center',
+          boxSizing: 'border-box',
+          contain: 'layout',
+          display: 'flex',
+          flexDirection: 'row',
+          fontSynthesis: 'none',
+          gap: '40px',
+          height: 'fit-content',
+          justifyContent: 'start',
+          MozOsxFontSmoothing: 'grayscale',
+          paddingBlock: '20px 0px',
+          paddingInline: `${sidePadding.left}px ${sidePadding.right}px`,
+          WebkitFontSmoothing: 'antialiased',
+          width: '100%',
+          overflowX: 'auto',
+        }}
+      >
+        {projects.map((project, index) => (
+          <button
+            key={project}
+            ref={(element) => {
+              itemRefs.current[index] = element;
+            }}
+            onClick={() => setSelectedIndex(index)}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              padding: 0,
+              boxSizing: 'border-box',
+              color: selectedIndex === index ? '#000000' : '#C4C4C4',
+              flexShrink: 0,
+              fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+              fontSize: '16px',
+              fontVariationSettings:
+                '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
+              fontWeight: 400,
+              lineHeight: '140%',
+              whiteSpace: 'pre',
+              width: 'fit-content',
+              cursor: 'pointer',
+              transition: 'color 150ms ease',
+            }}
+          >
+            {project}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
