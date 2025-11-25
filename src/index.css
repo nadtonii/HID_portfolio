@@ -187,7 +187,7 @@ body {
     position: fixed;
     left: 0;
     right: 0;
-    bottom: 8px;
+    bottom: 32px;
     display: flex;
     justify-content: center;
     gap: 10px;

@@ -514,62 +514,63 @@ export default function App() {
           )}
         </div>
 
-        <div
-          ref={carouselRef}
-          className={`project-carousel ${isMobile ? 'mobile-carousel' : ''}`}
-          style={{
-            alignItems: 'center',
-            boxSizing: 'border-box',
-            contain: 'layout',
-            display: 'flex',
-            flexDirection: 'row',
-            fontSynthesis: 'none',
-            gap: isMobile ? '24px' : '40px',
-            height: 'fit-content',
-            justifyContent: 'start',
-            MozOsxFontSmoothing: 'grayscale',
-            paddingBlock: '20px',
-            paddingInline: `${sidePadding.left}px ${sidePadding.right}px`,
-            WebkitFontSmoothing: 'antialiased',
-            width: '100%',
-            overflowX: 'auto',
-          }}
-        >
-          {projects.map((project, index) => (
-            <button
-              key={project}
-              ref={(element) => {
-                itemRefs.current[index] = element;
-              }}
-              onClick={() => handleSelectProject(index)}
-              onMouseDown={() => setPressedIndex(index)}
-              onMouseUp={() => setPressedIndex(null)}
-              onMouseLeave={() => setPressedIndex(null)}
-              className={isMobile ? 'mobile-carousel-item' : ''}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                padding: 0,
-                boxSizing: 'border-box',
-                color: selectedIndex === index ? '#000000' : '#C4C4C4',
-                flexShrink: 0,
-                fontFamily: '"Google Sans Flex", system-ui, sans-serif',
-                fontSize: '20px',
-                fontVariationSettings:
-                  '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
-                fontWeight: 400,
-                lineHeight: '140%',
-                whiteSpace: 'pre',
-                width: 'fit-content',
-                cursor: 'pointer',
-                transition: 'color 150ms ease, transform 120ms ease',
-                transform: pressedIndex === index ? 'scale(0.94)' : 'scale(1)',
-              }}
-            >
-              {project}
-            </button>
-          ))}
-        </div>
+        {!isMobile && (
+          <div
+            ref={carouselRef}
+            className="project-carousel"
+            style={{
+              alignItems: 'center',
+              boxSizing: 'border-box',
+              contain: 'layout',
+              display: 'flex',
+              flexDirection: 'row',
+              fontSynthesis: 'none',
+              gap: '40px',
+              height: 'fit-content',
+              justifyContent: 'start',
+              MozOsxFontSmoothing: 'grayscale',
+              paddingBlock: '20px',
+              paddingInline: `${sidePadding.left}px ${sidePadding.right}px`,
+              WebkitFontSmoothing: 'antialiased',
+              width: '100%',
+              overflowX: 'auto',
+            }}
+          >
+            {projects.map((project, index) => (
+              <button
+                key={project}
+                ref={(element) => {
+                  itemRefs.current[index] = element;
+                }}
+                onClick={() => handleSelectProject(index)}
+                onMouseDown={() => setPressedIndex(index)}
+                onMouseUp={() => setPressedIndex(null)}
+                onMouseLeave={() => setPressedIndex(null)}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  padding: 0,
+                  boxSizing: 'border-box',
+                  color: selectedIndex === index ? '#000000' : '#C4C4C4',
+                  flexShrink: 0,
+                  fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+                  fontSize: '20px',
+                  fontVariationSettings:
+                    '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
+                  fontWeight: 400,
+                  lineHeight: '140%',
+                  whiteSpace: 'pre',
+                  width: 'fit-content',
+                  cursor: 'pointer',
+                  transition: 'color 150ms ease, transform 120ms ease',
+                  transform: pressedIndex === index ? 'scale(0.94)' : 'scale(1)',
+                }}
+              >
+                {project}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
       {isMobile && pageControls}
     </div>
@@ -583,17 +584,17 @@ function renderProjectContent(projectName, options = {}) {
     case 'Flows':
       return <FlowsProject showTag={showTag} isMobile={isMobile} />;
     case 'Kakimasu':
-      return <KakimasuProject showTag={showTag} />;
+      return <KakimasuProject showTag={showTag} isMobile={isMobile} />;
     case 'Stack':
-      return <StackProject showTag={showTag} />;
+      return <StackProject showTag={showTag} isMobile={isMobile} />;
     case 'Voicenotes':
-      return <VoicenotesProject showTag={showTag} />;
+      return <VoicenotesProject showTag={showTag} isMobile={isMobile} />;
     case 'WorkFeed':
-      return <WorkFeedProject showTag={showTag} />;
+      return <WorkFeedProject showTag={showTag} isMobile={isMobile} />;
     case 'Switch UI':
-      return <SwitchUIProject showTag={showTag} />;
+      return <SwitchUIProject showTag={showTag} isMobile={isMobile} />;
     case 'Aurora Retreat':
-      return <AuroraRetreatProject showTag={showTag} />;
+      return <AuroraRetreatProject showTag={showTag} isMobile={isMobile} />;
     default:
       return (
         <div
@@ -615,127 +616,168 @@ function renderProjectContent(projectName, options = {}) {
   }
 }
 
-function FlowsProject({ showTag, isMobile }) {
-  if (isMobile) {
-    return (
+function MobileProjectFrame({
+  title,
+  year,
+  description,
+  coverImage,
+  frameImage,
+  coverStyle = {},
+  frameStyle = {},
+  showTag = true,
+}) {
+  return (
+    <div
+      style={{
+        alignItems: 'center',
+        boxSizing: 'border-box',
+        contain: 'layout',
+        display: 'flex',
+        flexDirection: 'column',
+        fontSynthesis: 'none',
+        gap: 5,
+        height: 'fit-content',
+        justifyContent: 'start',
+        MozOsxFontSmoothing: 'grayscale',
+        WebkitFontSmoothing: 'antialiased',
+        width: '100%',
+        maxWidth: '360px',
+      }}
+    >
       <div
         style={{
-          alignItems: 'center',
           boxSizing: 'border-box',
           contain: 'layout',
-          display: 'flex',
-          flexDirection: 'column',
-          fontSynthesis: 'none',
-          gap: 5,
-          height: 'fit-content',
-          justifyContent: 'start',
-          MozOsxFontSmoothing: 'grayscale',
-          WebkitFontSmoothing: 'antialiased',
+          flexShrink: '0',
+          height: '276px',
           width: '100%',
           maxWidth: '360px',
+          position: 'relative',
         }}
       >
         <div
           style={{
+            backgroundImage: `url(${coverImage})`,
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
             boxSizing: 'border-box',
-            contain: 'layout',
-            flexShrink: '0',
+            height: '250px',
+            left: '0',
+            position: 'absolute',
+            top: '0',
+            translate: '12px 13px',
+            width: '336px',
+            ...coverStyle,
+          }}
+        />
+        <div
+          style={{
+            backgroundImage: `url(${frameImage})`,
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+            boxSizing: 'border-box',
             height: '276px',
+            left: '0',
+            position: 'absolute',
+            top: '0',
             width: '100%',
             maxWidth: '360px',
-            position: 'relative',
+            ...frameStyle,
+          }}
+        />
+      </div>
+      {showTag && (
+        <div
+          style={{
+            alignItems: 'flex-start',
+            boxSizing: 'border-box',
+            contain: 'layout',
+            display: 'flex',
+            flexDirection: 'column',
+            flexShrink: '0',
+            height: 'fit-content',
+            justifyContent: 'center',
+            paddingBlock: '9px',
+            width: '100%',
+            maxWidth: '360px',
+            gap: '6px',
+            marginTop: '32px',
           }}
         >
           <div
             style={{
-              backgroundImage:
-                'url(https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXV3CVX9NTXB88Y3K21XW86.png)',
-              backgroundPosition: 'center',
-              backgroundSize: 'cover',
               boxSizing: 'border-box',
-              height: '250px',
-              left: '0',
-              position: 'absolute',
-              top: '0',
-              translate: '12px 13px',
-              width: '336px',
-            }}
-          />
-          <div
-            style={{
-              backgroundImage:
-                'url(https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXSWRQE7V2HAJS10DNMFAVH.png)',
-              backgroundPosition: 'center',
-              backgroundSize: 'cover',
-              boxSizing: 'border-box',
-              height: '276px',
-              left: '0',
-              position: 'absolute',
-              top: '0',
-              width: '100%',
-              maxWidth: '360px',
-            }}
-          />
-        </div>
-        {showTag && (
-          <div
-            style={{
-              alignItems: 'flex-start',
-              boxSizing: 'border-box',
-              contain: 'layout',
-              display: 'flex',
-              flexDirection: 'column',
+              color: '#000000',
               flexShrink: '0',
+              fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+              fontSize: '14px',
+              fontVariationSettings:
+                '"wght" 500, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
+              fontWeight: 500,
               height: 'fit-content',
-              justifyContent: 'center',
-              paddingBlock: '9px',
-              width: '100%',
-              maxWidth: '360px',
-              gap: '6px',
-              marginTop: '32px',
+              lineHeight: '140%',
+              textAlign: 'left',
+              whiteSpace: 'pre',
+              width: 'fit-content',
             }}
           >
-            <div
-              style={{
-                boxSizing: 'border-box',
-                color: '#000000',
-                flexShrink: '0',
-                fontFamily: '"Google Sans Flex", system-ui, sans-serif',
-                fontSize: '12px',
-                fontVariationSettings:
-                  '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
-                fontWeight: 400,
-                height: 'fit-content',
-                lineHeight: '140%',
-                textAlign: 'left',
-                whiteSpace: 'pre',
-                width: 'fit-content',
-              }}
-            >
-              2026
-            </div>
-            <div
-              style={{
-                boxSizing: 'border-box',
-                color: '#C4C4C4',
-                flexShrink: '0',
-                fontFamily: '"Google Sans Flex", system-ui, sans-serif',
-                fontSize: '12px',
-                fontVariationSettings:
-                  '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
-                fontWeight: 400,
-                height: 'fit-content',
-                lineHeight: '140%',
-                textAlign: 'left',
-                whiteSpace: 'pre',
-                width: 'fit-content',
-              }}
-            >
-              {'Product Design,\nWeb development, AI'}
-            </div>
+            {title}
           </div>
-        )}
-      </div>
+          <div
+            style={{
+              boxSizing: 'border-box',
+              color: '#000000',
+              flexShrink: '0',
+              fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+              fontSize: '12px',
+              fontVariationSettings:
+                '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
+              fontWeight: 400,
+              height: 'fit-content',
+              lineHeight: '140%',
+              textAlign: 'left',
+              whiteSpace: 'pre',
+              width: 'fit-content',
+            }}
+          >
+            {year}
+          </div>
+          <div
+            style={{
+              boxSizing: 'border-box',
+              color: '#C4C4C4',
+              flexShrink: '0',
+              fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+              fontSize: '12px',
+              fontVariationSettings:
+                '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
+              fontWeight: 400,
+              height: 'fit-content',
+              lineHeight: '140%',
+              textAlign: 'left',
+              whiteSpace: 'pre',
+              width: 'fit-content',
+            }}
+          >
+            {description}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function FlowsProject({ showTag, isMobile }) {
+  if (isMobile) {
+    return (
+      <MobileProjectFrame
+        title="Flows"
+        year="2026"
+        description={'Product Design,\nWeb development, AI'}
+        coverImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXV3CVX9NTXB88Y3K21XW86.png"
+        frameImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXSWRQE7V2HAJS10DNMFAVH.png"
+        showTag={showTag}
+      />
     );
   }
 
@@ -855,7 +897,21 @@ function FlowsProject({ showTag, isMobile }) {
   );
 }
 
-function KakimasuProject({ showTag }) {
+function KakimasuProject({ showTag, isMobile }) {
+  if (isMobile) {
+    return (
+      <MobileProjectFrame
+        title="Kakimasu"
+        year="2025"
+        description={'Product Design,\nResearch, Case Study'}
+        coverImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXTP56G76PV37A0A365TXK0.png"
+        frameImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXSN5F8D8968GAT411JQM2T.png"
+        coverStyle={{ borderRadius: '18px' }}
+        showTag={showTag}
+      />
+    );
+  }
+
   return (
     <div
       style={{
@@ -974,7 +1030,21 @@ function KakimasuProject({ showTag }) {
   );
 }
 
-function StackProject({ showTag }) {
+function StackProject({ showTag, isMobile }) {
+  if (isMobile) {
+    return (
+      <MobileProjectFrame
+        title="Stack"
+        year="2024"
+        description={'Product Design,\nResearch, Case Study'}
+        coverImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXVQ2G3ATX03SYABW92K6N6.png"
+        frameImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXSN5F8D8968GAT411JQM2T.png"
+        coverStyle={{ borderRadius: '18px' }}
+        showTag={showTag}
+      />
+    );
+  }
+
   return (
     <div
       style={{
@@ -1093,7 +1163,21 @@ function StackProject({ showTag }) {
   );
 }
 
-function VoicenotesProject({ showTag }) {
+function VoicenotesProject({ showTag, isMobile }) {
+  if (isMobile) {
+    return (
+      <MobileProjectFrame
+        title="Voicenotes"
+        year="2024"
+        description={'Product Design,\nPlayground, Braindump'}
+        coverImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXWGR2XWWMRK4TZFAYC0J1N.png"
+        frameImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXSN5F8D8968GAT411JQM2T.png"
+        coverStyle={{ borderRadius: '18px' }}
+        showTag={showTag}
+      />
+    );
+  }
+
   return (
     <div
       style={{
@@ -1212,7 +1296,22 @@ function VoicenotesProject({ showTag }) {
   );
 }
 
-function WorkFeedProject({ showTag }) {
+function WorkFeedProject({ showTag, isMobile }) {
+  if (isMobile) {
+    return (
+      <MobileProjectFrame
+        title="WorkFeed"
+        year="2024"
+        description={'Product Design,\nPlayground, Braindump'}
+        coverImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXXQT9GW5CRRPTRV3GPWMX6.png"
+        frameImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXXP7FX3HA23V4M099JJ5CN.png"
+        coverStyle={{ translate: '4px 20px', width: '352px', height: '240px' }}
+        frameStyle={{ height: '276px', width: '100%', maxWidth: '360px' }}
+        showTag={showTag}
+      />
+    );
+  }
+
   return (
     <div
       style={{
@@ -1341,7 +1440,22 @@ function WorkFeedProject({ showTag }) {
   );
 }
 
-function SwitchUIProject({ showTag }) {
+function SwitchUIProject({ showTag, isMobile }) {
+  if (isMobile) {
+    return (
+      <MobileProjectFrame
+        title="Switch UI"
+        year="2023"
+        description={'Product Design,\nPlayground, Braindump'}
+        coverImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXX9AFC1D81ZVT4PZZKV39S.png"
+        frameImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXXB2Z80MJHHM0KZD2S7NRF.png"
+        coverStyle={{ height: '240px', width: '352px', translate: '4px 18px' }}
+        frameStyle={{ height: '276px', width: '100%', maxWidth: '360px' }}
+        showTag={showTag}
+      />
+    );
+  }
+
   return (
     <div
       style={{
@@ -1459,7 +1573,22 @@ function SwitchUIProject({ showTag }) {
   );
 }
 
-function AuroraRetreatProject({ showTag }) {
+function AuroraRetreatProject({ showTag, isMobile }) {
+  if (isMobile) {
+    return (
+      <MobileProjectFrame
+        title="Aurora Retreat"
+        year="2023"
+        description={'Product Design,\nPlayground, Braindump'}
+        coverImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXY42VG80RBHBYW0SHEX23A.png"
+        frameImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXXP7FX3HA23V4M099JJ5CN.png"
+        coverStyle={{ translate: '4px 18px', width: '352px', height: '240px' }}
+        frameStyle={{ height: '276px', width: '100%', maxWidth: '360px' }}
+        showTag={showTag}
+      />
+    );
+  }
+
   return (
     <div
       style={{
