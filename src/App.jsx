@@ -292,88 +292,118 @@ export default function App() {
       <nav
         ref={navRef}
         style={{
-          width: '100%',
+          alignItems: 'start',
           boxSizing: 'border-box',
-          paddingInline: isMobile ? '16px' : '28px',
-          paddingBlock: isMobile ? '12px' : '18px',
-          display: 'flex',
-          flexDirection: isMobile ? 'column' : 'row',
-          alignItems: isMobile ? 'flex-start' : 'center',
-          justifyContent: 'space-between',
-          gap: isMobile ? '10px' : '18px',
-          fontFamily: '"Google Sans Flex", system-ui, sans-serif',
-          fontSynthesis: 'none',
           contain: 'layout',
+          display: 'flex',
+          flexDirection: 'column',
+          fontSynthesis: 'none',
+          gap: '8px',
+          height: 'fit-content',
+          justifyContent: 'center',
+          MozOsxFontSmoothing: 'grayscale',
+          paddingBottom: '0px',
+          paddingLeft: '32px',
+          paddingRight: '20px',
+          paddingTop: '20px',
+          WebkitFontSmoothing: 'antialiased',
+          width: '100%',
+          backgroundColor: 'transparent',
         }}
       >
         <div
           style={{
+            alignItems: 'start',
+            boxSizing: 'border-box',
+            contain: 'layout',
             display: 'flex',
             flexDirection: 'column',
-            gap: '4px',
-            color: '#000000',
-            lineHeight: '140%',
+            flexShrink: '0',
+            height: 'fit-content',
+            justifyContent: 'start',
+            width: 'fit-content',
           }}
         >
-          <span
+          <div
             style={{
-              fontSize: isMobile ? '18px' : '22px',
-              fontWeight: 600,
-              letterSpacing: '-0.01em',
+              boxSizing: 'border-box',
+              color: '#000000',
+              flexShrink: '0',
+              fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+              fontSize: '20px',
+              fontVariationSettings:
+                '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
+              fontWeight: 400,
+              height: 'fit-content',
+              lineHeight: '140%',
+              whiteSpace: 'pre',
+              width: 'fit-content',
             }}
           >
             Toni Nađ
-          </span>
-          <span
-            style={{
-              fontSize: '13px',
-              color: '#7B7B7B',
-              fontWeight: 400,
-            }}
-          >
-            Product design · Research · AI
-          </span>
+          </div>
         </div>
         <div
           style={{
-            display: 'flex',
             alignItems: 'center',
+            borderRadius: '0px',
+            boxSizing: 'border-box',
+            contain: 'layout',
+            display: 'flex',
+            flexDirection: 'row',
+            flexShrink: '0',
             gap: '12px',
-            color: '#000000',
-            flexWrap: 'wrap',
-            justifyContent: isMobile ? 'flex-start' : 'flex-end',
+            height: 'fit-content',
+            justifyContent: 'start',
+            paddingBlock: '0px',
+            paddingInline: '0px',
+            width: 'fit-content',
           }}
         >
           <a
             href="mailto:toni@nad.com"
             style={{
-              color: '#000000',
-              textDecoration: 'none',
-              fontSize: '14px',
-              padding: '8px 12px',
-              border: '1px solid #E5E5E5',
-              borderRadius: '999px',
-              backgroundColor: '#F8F8F8',
+              alignItems: 'center',
+              boxSizing: 'border-box',
+              contain: 'layout',
+              display: 'flex',
+              flexDirection: 'row',
+              flexShrink: '0',
+              height: '24px',
+              justifyContent: 'center',
+              width: '24px',
             }}
           >
-            Email
+            <div
+              style={{
+                backgroundImage:
+                  'url(https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXS3K8VTA6TT7AJYZJSDA0F.png)',
+                backgroundPosition: 'center',
+                backgroundSize: 'cover',
+                boxSizing: 'border-box',
+                flexShrink: '0',
+                height: '19px',
+                opacity: '10%',
+                width: '19px',
+              }}
+            />
           </a>
           <a
             href="https://www.linkedin.com"
             target="_blank"
             rel="noreferrer"
             style={{
-              color: '#000000',
-              textDecoration: 'none',
-              fontSize: '14px',
-              padding: '8px 12px',
-              border: '1px solid #E5E5E5',
-              borderRadius: '999px',
-              backgroundColor: '#F8F8F8',
+              backgroundImage:
+                'url(https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXS4XGXBVXT4CK0NG024Y15.svg)',
+              backgroundPosition: 'center',
+              backgroundSize: 'cover',
+              boxSizing: 'border-box',
+              flexShrink: '0',
+              height: '24px',
+              opacity: '10%',
+              width: '24px',
             }}
-          >
-            LinkedIn
-          </a>
+          />
         </div>
       </nav>
 
