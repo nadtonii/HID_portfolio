@@ -119,10 +119,11 @@ export default function App() {
     const paddingTop = navHeight + 8;
     const paddingBottom = 20;
     const stackGap = 8;
-    const availableHeight = viewportHeight - paddingTop - paddingBottom - stackGap - carouselHeight;
-    const baselineHeight = availableHeight > 360
-      ? Math.min(availableHeight, 640)
-      : availableHeight;
+    const safetyInset = 6;
+    const availableHeight =
+      viewportHeight - paddingTop - paddingBottom - stackGap - carouselHeight - safetyInset;
+    const baselineHeight =
+      availableHeight > 360 ? Math.min(availableHeight, 640) : availableHeight;
     const clampedHeight = Math.max(300, baselineHeight);
 
     setMobileStageHeight(clampedHeight);
