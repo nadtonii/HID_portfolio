@@ -346,10 +346,10 @@ function FlowsProject() {
         boxSizing: 'border-box',
         contain: 'layout',
         display: 'flex',
-        gap: '16px',
         height: '639px',
         justifyContent: 'center',
-        width: 'fit-content',
+        position: 'relative',
+        width: '100%',
         maxWidth: '100%',
       }}
     >
@@ -403,10 +403,14 @@ function FlowsProject() {
           fontSynthesis: 'none',
           height: 'fit-content',
           justifyContent: 'start',
+          left: '50%',
           MozOsxFontSmoothing: 'grayscale',
           paddingBlock: '64px',
+          position: 'absolute',
+          transform: 'translate(433px, 0)',
           WebkitFontSmoothing: 'antialiased',
           width: 'fit-content',
+          bottom: '0',
         }}
       >
         <div
