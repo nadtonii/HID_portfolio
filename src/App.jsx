@@ -14,6 +14,23 @@ export default function App() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const carouselRef = useRef(null);
   const itemRefs = useRef([]);
+  const [sidePadding, setSidePadding] = useState({ left: 20, right: 20 });
+
+  const calculateSidePadding = () => {
+    const carousel = carouselRef.current;
+    const items = itemRefs.current;
+
+    if (!carousel || !items.length) return;
+
+    const halfViewport = carousel.clientWidth / 2;
+    const firstHalf = items[0]?.offsetWidth / 2 || 0;
+    const lastHalf = items[items.length - 1]?.offsetWidth / 2 || 0;
+
+    setSidePadding({
+      left: Math.max(halfViewport - firstHalf, 20),
+      right: Math.max(halfViewport - lastHalf, 20),
+    });
+  };
 
   const centerSelected = (index) => {
     const carousel = carouselRef.current;
@@ -22,9 +39,11 @@ export default function App() {
     if (!carousel || !target) return;
 
     const targetCenter = target.offsetLeft + target.offsetWidth / 2;
-    const scrollLeft = targetCenter - carousel.clientWidth / 2;
+    const desiredScroll = targetCenter - carousel.clientWidth / 2;
+    const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+    const clampedScroll = Math.min(Math.max(desiredScroll, 0), maxScroll);
 
-    carousel.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+    carousel.scrollTo({ left: clampedScroll, behavior: 'smooth' });
   };
 
   useEffect(() => {
@@ -32,8 +51,20 @@ export default function App() {
   }, [selectedIndex]);
 
   useEffect(() => {
-    centerSelected(0);
-  }, []);
+    calculateSidePadding();
+    centerSelected(selectedIndex);
+
+    const handleResize = () => {
+      calculateSidePadding();
+      centerSelected(selectedIndex);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [selectedIndex]);
 
   return (
     <div
@@ -173,7 +204,7 @@ export default function App() {
           justifyContent: 'start',
           MozOsxFontSmoothing: 'grayscale',
           paddingBlock: '20px',
-          paddingInline: '20px',
+          paddingInline: `${sidePadding.left}px ${sidePadding.right}px`,
           WebkitFontSmoothing: 'antialiased',
           width: '100%',
           overflowX: 'auto',
