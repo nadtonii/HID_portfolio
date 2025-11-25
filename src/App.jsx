@@ -101,6 +101,27 @@ export default function App() {
     };
   }, []);
 
+  useEffect(() => {
+    const carousel = carouselRef.current;
+
+    if (!carousel) return undefined;
+
+    const handleWheel = (event) => {
+      const delta = event.deltaY || event.deltaX;
+
+      if (!delta) return;
+
+      event.preventDefault();
+      carousel.scrollLeft += delta;
+    };
+
+    carousel.addEventListener('wheel', handleWheel, { passive: false });
+
+    return () => {
+      carousel.removeEventListener('wheel', handleWheel, { passive: false });
+    };
+  }, []);
+
   return (
     <div
       style={{
