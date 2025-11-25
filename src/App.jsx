@@ -24,6 +24,8 @@ export default function App() {
   const animationFrameRef = useRef(null);
   const exitTimeoutRef = useRef(null);
   const tagTimeoutRef = useRef(null);
+  const touchStartXRef = useRef(null);
+  const touchCurrentXRef = useRef(null);
   const [sidePadding, setSidePadding] = useState({ left: 20, right: 20 });
 
   const calculateSidePadding = () => {
@@ -164,11 +166,44 @@ export default function App() {
     }, SLIDE_DURATION + TAG_DELAY);
   };
 
+  const handleTouchStart = (event) => {
+    if (event.touches.length !== 1) return;
+
+    const { clientX } = event.touches[0];
+    touchStartXRef.current = clientX;
+    touchCurrentXRef.current = clientX;
+  };
+
+  const handleTouchMove = (event) => {
+    if (!touchStartXRef.current) return;
+
+    touchCurrentXRef.current = event.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStartXRef.current || touchCurrentXRef.current === null) return;
+
+    const deltaX = touchCurrentXRef.current - touchStartXRef.current;
+    const threshold = 50;
+
+    if (Math.abs(deltaX) > threshold) {
+      if (deltaX < 0 && selectedIndex < projects.length - 1) {
+        handleSelectProject(selectedIndex + 1);
+      } else if (deltaX > 0 && selectedIndex > 0) {
+        handleSelectProject(selectedIndex - 1);
+      }
+    }
+
+    touchStartXRef.current = null;
+    touchCurrentXRef.current = null;
+  };
+
   return (
     <div
       style={{
         backgroundColor: '#FFFFFF',
-        height: '811px',
+        height: '100dvh',
+        minHeight: '100vh',
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
@@ -297,7 +332,13 @@ export default function App() {
           paddingInline: '20px',
         }}
       >
-        <div className="project-stage">
+        <div
+          className="project-stage"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          onTouchCancel={handleTouchEnd}
+        >
           {exitingIndex !== null && (
             <div
               className={`project-frame ${
