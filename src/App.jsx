@@ -302,6 +302,10 @@ export default function App() {
       ? overrides.mobileScale ?? Math.min(1, MOBILE_MAX_WIDTH / baseWidth)
       : 1;
     const mobileWidth = isMobile ? overrides.mobileWidth : undefined;
+    const desktopBottomPadding =
+      !isMobile && ['Kakimasu', 'Stack', 'Voicenotes'].includes(projectName)
+        ? '2px'
+        : undefined;
 
     return (
       <div key={frameKey || projectName} className={`project-frame ${transitionClass}`}>
@@ -311,6 +315,7 @@ export default function App() {
             '--project-base-width': baseWidth,
             '--project-mobile-scale': mobileScale,
             ...(mobileWidth ? { '--project-mobile-width': `${mobileWidth}px` } : {}),
+            ...(desktopBottomPadding ? { paddingBottom: desktopBottomPadding } : {}),
           }}
         >
           {renderProjectContent(projectName, { showTag: tagVisible, isMobile })}
