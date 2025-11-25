@@ -317,6 +317,8 @@ function renderProjectContent(projectName) {
   switch (projectName) {
     case 'Flows':
       return <FlowsProject />;
+    case 'Kakimasu':
+      return <KakimasuProject />;
     default:
       return (
         <div
@@ -448,6 +450,124 @@ function FlowsProject() {
           }}
         >
           {'Product Design,\nWeb development, AI'}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function KakimasuProject() {
+  return (
+    <div
+      style={{
+        alignItems: 'flex-end',
+        boxSizing: 'border-box',
+        contain: 'layout',
+        display: 'flex',
+        height: '638px',
+        justifyContent: 'center',
+        position: 'relative',
+        width: '100%',
+        maxWidth: '100%',
+      }}
+    >
+      <div
+        style={{
+          boxSizing: 'border-box',
+          contain: 'layout',
+          height: '638px',
+          width: '312px',
+          position: 'relative',
+          maxWidth: '100%',
+        }}
+      >
+        <div
+          style={{
+            backgroundImage:
+              'url(https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXTP56G76PV37A0A365TXK0.png)',
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+            borderRadius: '27px',
+            boxSizing: 'border-box',
+            height: '616px',
+            left: '0',
+            position: 'absolute',
+            top: '0',
+            translate: '13px 12px',
+            width: '284px',
+          }}
+        />
+        <div
+          style={{
+            backgroundImage:
+              'url(https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXSN5F8D8968GAT411JQM2T.png)',
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+            boxSizing: 'border-box',
+            height: '638px',
+            left: '0',
+            position: 'absolute',
+            top: '0',
+            translate: '0px 1px',
+            width: '311px',
+          }}
+        />
+      </div>
+      <div
+        style={{
+          alignItems: 'start',
+          boxSizing: 'border-box',
+          contain: 'layout',
+          display: 'flex',
+          flexDirection: 'column',
+          fontSynthesis: 'none',
+          height: 'fit-content',
+          justifyContent: 'start',
+          left: '50%',
+          MozOsxFontSmoothing: 'grayscale',
+          paddingBlock: '64px',
+          position: 'absolute',
+          transform: 'translate(172px, 0)',
+          WebkitFontSmoothing: 'antialiased',
+          width: 'fit-content',
+          bottom: '0',
+        }}
+      >
+        <div
+          style={{
+            boxSizing: 'border-box',
+            color: '#000000',
+            flexShrink: '0',
+            fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+            fontSize: '12px',
+            fontVariationSettings:
+              '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
+            fontWeight: 400,
+            height: 'fit-content',
+            lineHeight: '140%',
+            whiteSpace: 'pre',
+            width: 'fit-content',
+          }}
+        >
+          2025
+        </div>
+        <div
+          style={{
+            boxSizing: 'border-box',
+            color: '#C4C4C4',
+            flexShrink: '0',
+            fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+            fontSize: '12px',
+            fontVariationSettings:
+              '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
+            fontWeight: 400,
+            height: 'fit-content',
+            lineHeight: '140%',
+            whiteSpace: 'pre',
+            width: 'fit-content',
+          }}
+        >
+          {'Product Design,\nResearch, Case Study'}
         </div>
       </div>
     </div>
