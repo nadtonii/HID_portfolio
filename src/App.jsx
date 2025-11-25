@@ -246,6 +246,19 @@ export default function App() {
       </nav>
 
       <div
+        style={{
+          alignItems: 'center',
+          display: 'flex',
+          flex: '1 1 0%',
+          justifyContent: 'center',
+          width: '100%',
+          paddingInline: '20px',
+        }}
+      >
+        {renderProjectContent(projects[selectedIndex])}
+      </div>
+
+      <div
         ref={carouselRef}
         className="project-carousel"
         style={{
@@ -296,6 +309,76 @@ export default function App() {
           </button>
         ))}
       </div>
+    </div>
+  );
+}
+
+function renderProjectContent(projectName) {
+  switch (projectName) {
+    case 'Flows':
+      return <FlowsProject />;
+    default:
+      return (
+        <div
+          style={{
+            alignItems: 'center',
+            color: '#C4C4C4',
+            display: 'flex',
+            fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+            fontSize: '18px',
+            gap: '8px',
+            justifyContent: 'center',
+            lineHeight: '140%',
+          }}
+        >
+          <span>{projectName}</span>
+          <span style={{ color: '#000000' }}>coming soon</span>
+        </div>
+      );
+  }
+}
+
+function FlowsProject() {
+  return (
+    <div
+      style={{
+        boxSizing: 'border-box',
+        contain: 'layout',
+        height: '639px',
+        width: '834px',
+        position: 'relative',
+        maxWidth: '100%',
+      }}
+    >
+      <div
+        style={{
+          backgroundImage:
+            'url(https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXV3CVX9NTXB88Y3K21XW86.png)',
+          backgroundPosition: 'center',
+          backgroundSize: 'cover',
+          boxSizing: 'border-box',
+          height: '578px',
+          left: '0',
+          position: 'absolute',
+          top: '0',
+          translate: '28px 31px',
+          width: '777px',
+        }}
+      />
+      <div
+        style={{
+          backgroundImage:
+            'url(https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXSWRQE7V2HAJS10DNMFAVH.png)',
+          backgroundPosition: 'center',
+          backgroundSize: 'cover',
+          boxSizing: 'border-box',
+          height: '639px',
+          left: '0',
+          position: 'absolute',
+          top: '0',
+          width: '834px',
+        }}
+      />
     </div>
   );
 }
