@@ -10,6 +10,18 @@ const projects = [
   'Aurora Retreat',
 ];
 
+const projectDimensions = {
+  Flows: { width: 834 },
+  Kakimasu: { width: 312 },
+  Stack: { width: 312 },
+  Voicenotes: { width: 312 },
+  WorkFeed: { width: 1033 },
+  'Switch UI': { width: 824 },
+  'Aurora Retreat': { width: 1033 },
+};
+
+const MOBILE_MAX_WIDTH = 350;
+
 export default function App() {
   const SLIDE_DURATION = 600;
   const TAG_DELAY = 50;
@@ -28,6 +40,8 @@ export default function App() {
   const touchCurrentXRef = useRef(null);
   const [sidePadding, setSidePadding] = useState({ left: 20, right: 20 });
   const [isMobile, setIsMobile] = useState(false);
+  const [mobileStageHeight, setMobileStageHeight] = useState(null);
+  const navRef = useRef(null);
 
   const calculateSidePadding = () => {
     const carousel = carouselRef.current;
@@ -89,6 +103,18 @@ export default function App() {
     centerSelected(selectedIndex);
   }, [selectedIndex]);
 
+  const updateMobileStageHeight = () => {
+    if (!isMobile) return;
+
+    const navHeight = navRef.current?.offsetHeight || 0;
+    const carouselHeight = carouselRef.current?.offsetHeight || 0;
+    const viewportHeight = window.visualViewport?.height || window.innerHeight || 0;
+    const availableHeight = viewportHeight - navHeight - carouselHeight;
+    const clampedHeight = Math.max(360, Math.min(availableHeight, 640));
+
+    setMobileStageHeight(clampedHeight);
+  };
+
   useEffect(() => {
     calculateSidePadding();
     centerSelected(selectedIndex);
@@ -96,6 +122,7 @@ export default function App() {
     const handleResize = () => {
       calculateSidePadding();
       centerSelected(selectedIndex);
+      updateMobileStageHeight();
     };
 
     window.addEventListener('resize', handleResize);
@@ -103,7 +130,13 @@ export default function App() {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [selectedIndex]);
+  }, [selectedIndex, isMobile]);
+
+  useEffect(() => {
+    if (isMobile) {
+      updateMobileStageHeight();
+    }
+  }, [isMobile]);
 
   useEffect(() => {
     return () => {
@@ -214,6 +247,25 @@ export default function App() {
     touchCurrentXRef.current = null;
   };
 
+  const renderFrame = (projectName, transitionClass, tagVisible, frameKey) => {
+    const baseWidth = projectDimensions[projectName]?.width || 834;
+    const mobileScale = Math.min(1, MOBILE_MAX_WIDTH / baseWidth);
+
+    return (
+      <div key={frameKey || projectName} className={`project-frame ${transitionClass}`}>
+        <div
+          className="project-content-wrapper"
+          style={{
+            '--project-base-width': baseWidth,
+            '--project-mobile-scale': mobileScale,
+          }}
+        >
+          {renderProjectContent(projectName, { showTag: tagVisible })}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div
       style={{
@@ -229,6 +281,7 @@ export default function App() {
       }}
     >
       <nav
+        ref={navRef}
         style={{
           alignItems: 'center',
           boxSizing: 'border-box',
@@ -350,32 +403,26 @@ export default function App() {
       >
         <div
           className="project-stage"
+          style={{ height: isMobile && mobileStageHeight ? mobileStageHeight : undefined }}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
           onTouchCancel={handleTouchEnd}
         >
           {exitingIndex !== null && (
-            <div
-              className={`project-frame ${
-                transitionDirection === 1 ? 'exit-to-left' : 'exit-to-right'
-              }`}
-            >
-              <div className="project-content-wrapper">
-                {renderProjectContent(projects[exitingIndex], { showTag: false })}
-              </div>
-            </div>
+            renderFrame(
+              projects[exitingIndex],
+              transitionDirection === 1 ? 'exit-to-left' : 'exit-to-right',
+              false,
+              `${projects[exitingIndex]}-exit`
+            )
           )}
-          <div
-            key={projects[selectedIndex]}
-            className={`project-frame ${
-              transitionDirection === 1 ? 'enter-from-right' : 'enter-from-left'
-            }`}
-          >
-            <div className="project-content-wrapper">
-              {renderProjectContent(projects[selectedIndex], { showTag })}
-            </div>
-          </div>
+          {renderFrame(
+            projects[selectedIndex],
+            transitionDirection === 1 ? 'enter-from-right' : 'enter-from-left',
+            showTag,
+            projects[selectedIndex]
+          )}
         </div>
       </div>
 

@@ -93,7 +93,9 @@ body {
   }
 
   .project-stage {
-    height: clamp(360px, 62vh, 560px);
+    height: auto;
+    min-height: 360px;
+    max-height: 640px;
     overflow: visible;
     padding-inline: 12px;
   }
@@ -104,17 +106,13 @@ body {
 
   .project-content-wrapper {
     --project-base-width: 834;
-    --project-max-mobile-width: min(350px, 94vw);
-    transform: scale(
-      clamp(
-        0.35,
-        calc(var(--project-max-mobile-width) / (var(--project-base-width) * 1px)),
-        1
-      )
-    );
-    transform-origin: center bottom;
-    max-width: var(--project-max-mobile-width);
+    --project-mobile-scale: 1;
+    max-width: min(350px, 94vw);
+    width: min(350px, 94vw);
     margin-inline: auto;
+    padding: 6px 4px;
+    transform: scale(var(--project-mobile-scale));
+    transform-origin: center center;
   }
 
   html,
