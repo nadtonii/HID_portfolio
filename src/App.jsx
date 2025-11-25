@@ -1455,18 +1455,45 @@ function AuroraRetreatProject({ showTag }) {
           WebkitFontSmoothing: 'antialiased',
           width: 'fit-content',
           bottom: '0',
-          color: '#C4C4C4',
-          fontFamily: '"Google Sans Flex", system-ui, sans-serif',
-          fontSize: '12px',
-          fontVariationSettings:
-            '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
-          fontWeight: 400,
-          lineHeight: '140%',
-          whiteSpace: 'pre',
         }}
         className={`project-tag ${showTag ? 'visible' : ''}`}
       >
-        Aurora Retreat
+        <div
+          style={{
+            boxSizing: 'border-box',
+            color: '#000000',
+            flexShrink: '0',
+            fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+            fontSize: '12px',
+            fontVariationSettings:
+              '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
+            fontWeight: 400,
+            height: 'fit-content',
+            lineHeight: '140%',
+            whiteSpace: 'pre',
+            width: 'fit-content',
+          }}
+        >
+          2023
+        </div>
+        <div
+          style={{
+            boxSizing: 'border-box',
+            color: '#C4C4C4',
+            flexShrink: '0',
+            fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+            fontSize: '12px',
+            fontVariationSettings:
+              '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
+            fontWeight: 400,
+            height: 'fit-content',
+            lineHeight: '140%',
+            whiteSpace: 'pre',
+            width: 'fit-content',
+          }}
+        >
+          {'Product Design,\nPlayground, Braindump'}
+        </div>
       </div>
     </div>
   );
