@@ -11,10 +11,18 @@ const projects = [
 ];
 
 export default function App() {
+  const SLIDE_DURATION = 600;
+  const TAG_DELAY = 250;
+
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [exitingIndex, setExitingIndex] = useState(null);
+  const [transitionDirection, setTransitionDirection] = useState(1);
+  const [showTag, setShowTag] = useState(true);
   const carouselRef = useRef(null);
   const itemRefs = useRef([]);
   const animationFrameRef = useRef(null);
+  const exitTimeoutRef = useRef(null);
+  const tagTimeoutRef = useRef(null);
   const [sidePadding, setSidePadding] = useState({ left: 20, right: 20 });
 
   const calculateSidePadding = () => {
@@ -98,6 +106,14 @@ export default function App() {
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
+
+      if (exitTimeoutRef.current) {
+        clearTimeout(exitTimeoutRef.current);
+      }
+
+      if (tagTimeoutRef.current) {
+        clearTimeout(tagTimeoutRef.current);
+      }
     };
   }, []);
 
@@ -121,6 +137,31 @@ export default function App() {
       carousel.removeEventListener('wheel', handleWheel, { passive: false });
     };
   }, []);
+
+  const handleSelectProject = (index) => {
+    if (index === selectedIndex) return;
+
+    setTransitionDirection(index > selectedIndex ? 1 : -1);
+    setExitingIndex(selectedIndex);
+    setSelectedIndex(index);
+    setShowTag(false);
+
+    if (exitTimeoutRef.current) {
+      clearTimeout(exitTimeoutRef.current);
+    }
+
+    if (tagTimeoutRef.current) {
+      clearTimeout(tagTimeoutRef.current);
+    }
+
+    exitTimeoutRef.current = setTimeout(() => {
+      setExitingIndex(null);
+    }, SLIDE_DURATION);
+
+    tagTimeoutRef.current = setTimeout(() => {
+      setShowTag(true);
+    }, SLIDE_DURATION + TAG_DELAY);
+  };
 
   return (
     <div
@@ -255,7 +296,25 @@ export default function App() {
           paddingInline: '20px',
         }}
       >
-        {renderProjectContent(projects[selectedIndex])}
+        <div className="project-stage">
+          {exitingIndex !== null && (
+            <div
+              className={`project-frame ${
+                transitionDirection === 1 ? 'exit-to-left' : 'exit-to-right'
+              }`}
+            >
+              {renderProjectContent(projects[exitingIndex], { showTag: false })}
+            </div>
+          )}
+          <div
+            key={projects[selectedIndex]}
+            className={`project-frame ${
+              transitionDirection === 1 ? 'enter-from-right' : 'enter-from-left'
+            }`}
+          >
+            {renderProjectContent(projects[selectedIndex], { showTag })}
+          </div>
+        </div>
       </div>
 
       <div
@@ -285,7 +344,7 @@ export default function App() {
             ref={(element) => {
               itemRefs.current[index] = element;
             }}
-            onClick={() => setSelectedIndex(index)}
+            onClick={() => handleSelectProject(index)}
             style={{
               background: 'transparent',
               border: 'none',
@@ -313,12 +372,14 @@ export default function App() {
   );
 }
 
-function renderProjectContent(projectName) {
+function renderProjectContent(projectName, options = {}) {
+  const { showTag = true } = options;
+
   switch (projectName) {
     case 'Flows':
-      return <FlowsProject />;
+      return <FlowsProject showTag={showTag} />;
     case 'Kakimasu':
-      return <KakimasuProject />;
+      return <KakimasuProject showTag={showTag} />;
     default:
       return (
         <div
@@ -340,7 +401,7 @@ function renderProjectContent(projectName) {
   }
 }
 
-function FlowsProject() {
+function FlowsProject({ showTag }) {
   return (
     <div
       style={{
@@ -414,6 +475,7 @@ function FlowsProject() {
           width: 'fit-content',
           bottom: '0',
         }}
+        className={`project-tag ${showTag ? 'visible' : ''}`}
       >
         <div
           style={{
@@ -456,7 +518,7 @@ function FlowsProject() {
   );
 }
 
-function KakimasuProject() {
+function KakimasuProject({ showTag }) {
   return (
     <div
       style={{
@@ -532,6 +594,7 @@ function KakimasuProject() {
           width: 'fit-content',
           bottom: '0',
         }}
+        className={`project-tag ${showTag ? 'visible' : ''}`}
       >
         <div
           style={{
