@@ -279,12 +279,12 @@ export default function App() {
     <div
       style={{
         backgroundColor: '#FFFFFF',
-        height: isMobile ? '100dvh' : '811px',
-        minHeight: isMobile ? '100vh' : 'auto',
+        height: isMobile ? '100dvh' : '100vh',
+        minHeight: '100vh',
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-start',
         alignItems: 'center',
         overflow: 'hidden',
       }}
@@ -292,122 +292,103 @@ export default function App() {
       <nav
         ref={navRef}
         style={{
-          alignItems: 'center',
-          boxSizing: 'border-box',
-          contain: 'layout',
-          display: 'flex',
-          flexDirection: 'row',
-          fontSynthesis: 'none',
-          gap: '16px',
-          height: 'fit-content',
-          justifyContent: 'start',
-          MozOsxFontSmoothing: 'grayscale',
-          paddingBlock: '20px',
-          paddingInline: '20px',
-          WebkitFontSmoothing: 'antialiased',
           width: '100%',
+          boxSizing: 'border-box',
+          paddingInline: isMobile ? '16px' : '28px',
+          paddingBlock: isMobile ? '12px' : '18px',
+          display: 'flex',
+          flexDirection: isMobile ? 'column' : 'row',
+          alignItems: isMobile ? 'flex-start' : 'center',
+          justifyContent: 'space-between',
+          gap: isMobile ? '10px' : '18px',
+          fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+          fontSynthesis: 'none',
+          contain: 'layout',
         }}
       >
         <div
           style={{
-            alignItems: 'start',
-            boxSizing: 'border-box',
-            contain: 'layout',
             display: 'flex',
-            flexBasis: '0px',
             flexDirection: 'column',
-            flexGrow: '1',
-            flexShrink: '0',
-            height: 'fit-content',
-            justifyContent: 'start',
-            width: 'auto',
+            gap: '4px',
+            color: '#000000',
+            lineHeight: '140%',
           }}
         >
-          <div
+          <span
             style={{
-              boxSizing: 'border-box',
-              color: '#000000',
-              flexShrink: '0',
-              fontFamily: '"Google Sans Flex", system-ui, sans-serif',
-              fontSize: '20px',
-              fontVariationSettings:
-                '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
-              fontWeight: 400,
-              height: 'fit-content',
-              lineHeight: '140%',
-              whiteSpace: 'pre',
-              width: 'fit-content',
+              fontSize: isMobile ? '18px' : '22px',
+              fontWeight: 600,
+              letterSpacing: '-0.01em',
             }}
           >
             Toni Nađ
-          </div>
+          </span>
+          <span
+            style={{
+              fontSize: '13px',
+              color: '#7B7B7B',
+              fontWeight: 400,
+            }}
+          >
+            Product design · Research · AI
+          </span>
         </div>
         <div
           style={{
-            alignItems: 'center',
-            borderRadius: '0px',
-            boxSizing: 'border-box',
-            contain: 'layout',
             display: 'flex',
-            flexDirection: 'row',
-            flexShrink: '0',
+            alignItems: 'center',
             gap: '12px',
-            height: 'fit-content',
-            justifyContent: 'start',
-            paddingBlock: '0px',
-            paddingInline: '0px',
-            width: 'fit-content',
+            color: '#000000',
+            flexWrap: 'wrap',
+            justifyContent: isMobile ? 'flex-start' : 'flex-end',
           }}
         >
-          <div
+          <a
+            href="mailto:toni@nad.com"
             style={{
-              alignItems: 'center',
-              boxSizing: 'border-box',
-              contain: 'layout',
-              display: 'flex',
-              flexDirection: 'row',
-              flexShrink: '0',
-              height: '24px',
-              justifyContent: 'center',
-              width: '24px',
+              color: '#000000',
+              textDecoration: 'none',
+              fontSize: '14px',
+              padding: '8px 12px',
+              border: '1px solid #E5E5E5',
+              borderRadius: '999px',
+              backgroundColor: '#F8F8F8',
             }}
           >
-            <div
-              style={{
-                backgroundImage:
-                  'url(https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXS3K8VTA6TT7AJYZJSDA0F.png)',
-                backgroundPosition: 'center',
-                backgroundSize: 'cover',
-                boxSizing: 'border-box',
-                flexShrink: '0',
-                height: '19px',
-                width: '19px',
-              }}
-            />
-          </div>
-          <div
+            Email
+          </a>
+          <a
+            href="https://www.linkedin.com"
+            target="_blank"
+            rel="noreferrer"
             style={{
-              backgroundImage:
-                'url(https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXS4XGXBVXT4CK0NG024Y15.svg)',
-              backgroundPosition: 'center',
-              backgroundSize: 'cover',
-              boxSizing: 'border-box',
-              flexShrink: '0',
-              height: '24px',
-              width: '24px',
+              color: '#000000',
+              textDecoration: 'none',
+              fontSize: '14px',
+              padding: '8px 12px',
+              border: '1px solid #E5E5E5',
+              borderRadius: '999px',
+              backgroundColor: '#F8F8F8',
             }}
-          />
+          >
+            LinkedIn
+          </a>
         </div>
       </nav>
 
       <div
         style={{
-          alignItems: 'center',
           display: 'flex',
-          flex: '1 1 0%',
-          justifyContent: 'center',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: isMobile ? 'flex-start' : 'center',
+          gap: '16px',
           width: '100%',
+          flex: '1 1 auto',
           paddingInline: '20px',
+          paddingBottom: isMobile ? '20px' : '28px',
+          boxSizing: 'border-box',
         }}
       >
         <div
@@ -433,62 +414,62 @@ export default function App() {
             projects[selectedIndex]
           )}
         </div>
-      </div>
 
-      <div
-        ref={carouselRef}
-        className="project-carousel"
-        style={{
-          alignItems: 'center',
-          boxSizing: 'border-box',
-          contain: 'layout',
-          display: 'flex',
-          flexDirection: 'row',
-          fontSynthesis: 'none',
-          gap: '40px',
-          height: 'fit-content',
-          justifyContent: 'start',
-          MozOsxFontSmoothing: 'grayscale',
-          paddingBlock: '20px',
-          paddingInline: `${sidePadding.left}px ${sidePadding.right}px`,
-          WebkitFontSmoothing: 'antialiased',
-          width: '100%',
-          overflowX: 'auto',
-        }}
-      >
-        {projects.map((project, index) => (
-          <button
-            key={project}
-            ref={(element) => {
-              itemRefs.current[index] = element;
-            }}
-            onClick={() => handleSelectProject(index)}
-            onMouseDown={() => setPressedIndex(index)}
-            onMouseUp={() => setPressedIndex(null)}
-            onMouseLeave={() => setPressedIndex(null)}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              padding: 0,
-              boxSizing: 'border-box',
-              color: selectedIndex === index ? '#000000' : '#C4C4C4',
-              flexShrink: 0,
-              fontFamily: '"Google Sans Flex", system-ui, sans-serif',
-              fontSize: '20px',
-              fontVariationSettings:
-                '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
-              fontWeight: 400,
-              lineHeight: '140%',
-              whiteSpace: 'pre',
-              width: 'fit-content',
-              cursor: 'pointer',
-              transition: 'color 150ms ease, transform 120ms ease',
-              transform: pressedIndex === index ? 'scale(0.94)' : 'scale(1)',
-            }}
-          >
-            {project}
-          </button>
-        ))}
+        <div
+          ref={carouselRef}
+          className="project-carousel"
+          style={{
+            alignItems: 'center',
+            boxSizing: 'border-box',
+            contain: 'layout',
+            display: 'flex',
+            flexDirection: 'row',
+            fontSynthesis: 'none',
+            gap: '40px',
+            height: 'fit-content',
+            justifyContent: 'start',
+            MozOsxFontSmoothing: 'grayscale',
+            paddingBlock: '20px',
+            paddingInline: `${sidePadding.left}px ${sidePadding.right}px`,
+            WebkitFontSmoothing: 'antialiased',
+            width: '100%',
+            overflowX: 'auto',
+          }}
+        >
+          {projects.map((project, index) => (
+            <button
+              key={project}
+              ref={(element) => {
+                itemRefs.current[index] = element;
+              }}
+              onClick={() => handleSelectProject(index)}
+              onMouseDown={() => setPressedIndex(index)}
+              onMouseUp={() => setPressedIndex(null)}
+              onMouseLeave={() => setPressedIndex(null)}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                padding: 0,
+                boxSizing: 'border-box',
+                color: selectedIndex === index ? '#000000' : '#C4C4C4',
+                flexShrink: 0,
+                fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+                fontSize: '20px',
+                fontVariationSettings:
+                  '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
+                fontWeight: 400,
+                lineHeight: '140%',
+                whiteSpace: 'pre',
+                width: 'fit-content',
+                cursor: 'pointer',
+                transition: 'color 150ms ease, transform 120ms ease',
+                transform: pressedIndex === index ? 'scale(0.94)' : 'scale(1)',
+              }}
+            >
+              {project}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
