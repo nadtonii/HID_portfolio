@@ -342,43 +342,110 @@ function FlowsProject() {
   return (
     <div
       style={{
+        alignItems: 'flex-end',
         boxSizing: 'border-box',
         contain: 'layout',
+        display: 'flex',
+        gap: '16px',
         height: '639px',
-        width: '834px',
-        position: 'relative',
+        justifyContent: 'center',
+        width: 'fit-content',
         maxWidth: '100%',
       }}
     >
       <div
         style={{
-          backgroundImage:
-            'url(https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXV3CVX9NTXB88Y3K21XW86.png)',
-          backgroundPosition: 'center',
-          backgroundSize: 'cover',
           boxSizing: 'border-box',
-          height: '578px',
-          left: '0',
-          position: 'absolute',
-          top: '0',
-          translate: '28px 31px',
-          width: '777px',
+          contain: 'layout',
+          height: '639px',
+          width: '834px',
+          position: 'relative',
+          maxWidth: '100%',
         }}
-      />
+      >
+        <div
+          style={{
+            backgroundImage:
+              'url(https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXV3CVX9NTXB88Y3K21XW86.png)',
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+            boxSizing: 'border-box',
+            height: '578px',
+            left: '0',
+            position: 'absolute',
+            top: '0',
+            translate: '28px 31px',
+            width: '777px',
+          }}
+        />
+        <div
+          style={{
+            backgroundImage:
+              'url(https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXSWRQE7V2HAJS10DNMFAVH.png)',
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+            boxSizing: 'border-box',
+            height: '639px',
+            left: '0',
+            position: 'absolute',
+            top: '0',
+            width: '834px',
+          }}
+        />
+      </div>
       <div
         style={{
-          backgroundImage:
-            'url(https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXSWRQE7V2HAJS10DNMFAVH.png)',
-          backgroundPosition: 'center',
-          backgroundSize: 'cover',
+          alignItems: 'start',
           boxSizing: 'border-box',
-          height: '639px',
-          left: '0',
-          position: 'absolute',
-          top: '0',
-          width: '834px',
+          contain: 'layout',
+          display: 'flex',
+          flexDirection: 'column',
+          fontSynthesis: 'none',
+          height: 'fit-content',
+          justifyContent: 'start',
+          MozOsxFontSmoothing: 'grayscale',
+          paddingBlock: '64px',
+          WebkitFontSmoothing: 'antialiased',
+          width: 'fit-content',
         }}
-      />
+      >
+        <div
+          style={{
+            boxSizing: 'border-box',
+            color: '#000000',
+            flexShrink: '0',
+            fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+            fontSize: '12px',
+            fontVariationSettings:
+              '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
+            fontWeight: 400,
+            height: 'fit-content',
+            lineHeight: '140%',
+            whiteSpace: 'pre',
+            width: 'fit-content',
+          }}
+        >
+          2026
+        </div>
+        <div
+          style={{
+            boxSizing: 'border-box',
+            color: '#C4C4C4',
+            flexShrink: '0',
+            fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+            fontSize: '12px',
+            fontVariationSettings:
+              '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
+            fontWeight: 400,
+            height: 'fit-content',
+            lineHeight: '140%',
+            whiteSpace: 'pre',
+            width: 'fit-content',
+          }}
+        >
+          {'Product Design,\nWeb development, AI'}
+        </div>
+      </div>
     </div>
   );
 }
