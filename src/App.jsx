@@ -12,12 +12,13 @@ const projects = [
 
 export default function App() {
   const SLIDE_DURATION = 600;
-  const TAG_DELAY = 250;
+  const TAG_DELAY = 50;
 
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [exitingIndex, setExitingIndex] = useState(null);
   const [transitionDirection, setTransitionDirection] = useState(1);
   const [showTag, setShowTag] = useState(true);
+  const [pressedIndex, setPressedIndex] = useState(null);
   const carouselRef = useRef(null);
   const itemRefs = useRef([]);
   const animationFrameRef = useRef(null);
@@ -345,6 +346,9 @@ export default function App() {
               itemRefs.current[index] = element;
             }}
             onClick={() => handleSelectProject(index)}
+            onMouseDown={() => setPressedIndex(index)}
+            onMouseUp={() => setPressedIndex(null)}
+            onMouseLeave={() => setPressedIndex(null)}
             style={{
               background: 'transparent',
               border: 'none',
@@ -353,7 +357,7 @@ export default function App() {
               color: selectedIndex === index ? '#000000' : '#C4C4C4',
               flexShrink: 0,
               fontFamily: '"Google Sans Flex", system-ui, sans-serif',
-              fontSize: '16px',
+              fontSize: '20px',
               fontVariationSettings:
                 '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
               fontWeight: 400,
@@ -361,7 +365,8 @@ export default function App() {
               whiteSpace: 'pre',
               width: 'fit-content',
               cursor: 'pointer',
-              transition: 'color 150ms ease',
+              transition: 'color 150ms ease, transform 120ms ease',
+              transform: pressedIndex === index ? 'scale(0.94)' : 'scale(1)',
             }}
           >
             {project}
