@@ -46,6 +46,7 @@ export default function App() {
   const tagTimeoutRef = useRef(null);
   const touchStartXRef = useRef(null);
   const touchCurrentXRef = useRef(null);
+  const lastWheelNavigationRef = useRef(0);
   const [sidePadding, setSidePadding] = useState({ left: 20, right: 20 });
   const [isMobile, setIsMobile] = useState(false);
   const [desktopStageHeight, setDesktopStageHeight] = useState(null);
@@ -275,6 +276,32 @@ export default function App() {
     touchCurrentXRef.current = null;
   };
 
+  const handleStageWheel = (event) => {
+    if (isMobile) return;
+
+    const primaryDelta =
+      Math.abs(event.deltaX) > Math.abs(event.deltaY)
+        ? event.deltaX
+        : event.deltaY;
+
+    if (!primaryDelta) return;
+
+    event.preventDefault();
+
+    const now = Date.now();
+    const MIN_WHEEL_INTERVAL = 250;
+
+    if (now - lastWheelNavigationRef.current < MIN_WHEEL_INTERVAL) return;
+
+    if (primaryDelta > 0 && selectedIndex < projects.length - 1) {
+      handleSelectProject(selectedIndex + 1);
+      lastWheelNavigationRef.current = now;
+    } else if (primaryDelta < 0 && selectedIndex > 0) {
+      handleSelectProject(selectedIndex - 1);
+      lastWheelNavigationRef.current = now;
+    }
+  };
+
   const renderFrame = (projectName, transitionClass, tagVisible, frameKey) => {
     const baseWidth = projectDimensions[projectName]?.width || 834;
     const overrides = projectMobileLayouts[projectName] || {};
@@ -499,6 +526,7 @@ export default function App() {
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
           onTouchCancel={handleTouchEnd}
+          onWheel={handleStageWheel}
         >
           {exitingIndex !== null && (
             renderFrame(
