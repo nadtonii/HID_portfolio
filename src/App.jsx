@@ -631,6 +631,7 @@ function MobileProjectFrame({
   containerHeight,
   coverDimensions = {},
   frameDimensions = {},
+  additionalLayers = [],
 }) {
   const resolvedWidth = `min(100%, ${containerWidth}px)`;
   const resolvedFrameHeight = frameDimensions.height ?? 276;
@@ -698,6 +699,25 @@ function MobileProjectFrame({
             ...frameStyle,
           }}
         />
+        {additionalLayers.map((layer, index) => (
+          <div
+            // eslint-disable-next-line react/no-array-index-key
+            key={index}
+            style={{
+              backgroundImage: layer.image ? `url(${layer.image})` : undefined,
+              backgroundPosition: 'center',
+              backgroundSize: 'cover',
+              boxSizing: 'border-box',
+              height: layer.height,
+              width: layer.width,
+              left: '0',
+              position: 'absolute',
+              top: '0',
+              translate: layer.translate ?? '0px 0px',
+              backgroundColor: layer.backgroundColor,
+            }}
+          />
+        ))}
       </div>
       <div
         className={`mobile-tagline ${showTag ? 'visible' : ''}`}
@@ -1338,8 +1358,18 @@ function WorkFeedProject({ showTag, isMobile }) {
         description={'Product Design,\nPlayground, Braindump'}
         coverImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXXQT9GW5CRRPTRV3GPWMX6.png"
         frameImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXXP7FX3HA23V4M099JJ5CN.png"
-        coverStyle={{ translate: '4px 20px', width: '352px', height: '240px' }}
-        frameStyle={{ height: '276px', width: '100%', maxWidth: '360px' }}
+        containerWidth={360}
+        containerHeight={223}
+        coverDimensions={{ width: 285, height: 170, translate: '46px 26px' }}
+        frameDimensions={{ width: 360, height: 223 }}
+        additionalLayers={[
+          {
+            backgroundColor: '#FFFFFF',
+            height: '173px',
+            width: '10px',
+            translate: '322px 23px',
+          },
+        ]}
         showTag={showTag}
       />
     );
@@ -1482,8 +1512,10 @@ function SwitchUIProject({ showTag, isMobile }) {
         description={'Product Design,\nPlayground, Braindump'}
         coverImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXX9AFC1D81ZVT4PZZKV39S.png"
         frameImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXXB2Z80MJHHM0KZD2S7NRF.png"
-        coverStyle={{ height: '240px', width: '352px', translate: '4px 18px' }}
-        frameStyle={{ height: '276px', width: '100%', maxWidth: '360px' }}
+        containerWidth={360}
+        containerHeight={153}
+        coverDimensions={{ width: 240, height: 135, translate: '60px 9px' }}
+        frameDimensions={{ width: 360, height: 153 }}
         showTag={showTag}
       />
     );
@@ -1615,8 +1647,10 @@ function AuroraRetreatProject({ showTag, isMobile }) {
         description={'Product Design,\nPlayground, Braindump'}
         coverImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXY42VG80RBHBYW0SHEX23A.png"
         frameImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXXP7FX3HA23V4M099JJ5CN.png"
-        coverStyle={{ translate: '4px 18px', width: '352px', height: '240px' }}
-        frameStyle={{ height: '276px', width: '100%', maxWidth: '360px' }}
+        containerWidth={360}
+        containerHeight={223}
+        coverDimensions={{ width: 267, height: 168, translate: '46px 29px' }}
+        frameDimensions={{ width: 360, height: 223 }}
         showTag={showTag}
       />
     );
