@@ -10,6 +10,16 @@ const projects = [
   'Aurora Retreat',
 ];
 
+const projectLinks = {
+  Flows: 'https://flowsapp.site',
+  Kakimasu: 'https://toninad.notion.site/kakimasu',
+  Stack: 'https://toninad.notion.site/stack',
+  Voicenotes: 'https://toninad.notion.site/voicenotes',
+  WorkFeed: 'https://toninad.notion.site/wrkfeed',
+  'Switch UI': 'https://www.tnad.xyz/switchui',
+  'Aurora Retreat': 'https://toninad.notion.site/aurora',
+};
+
 const projectDimensions = {
   Flows: { width: 834 },
   Kakimasu: { width: 312 },
@@ -429,7 +439,9 @@ export default function App() {
           }}
         >
           <a
-            href="mailto:toni@nad.com"
+            href="https://bsky.app/profile/tnad.xyz"
+            target="_blank"
+            rel="noreferrer"
             style={{
               alignItems: 'center',
               boxSizing: 'border-box',
@@ -457,9 +469,7 @@ export default function App() {
             />
           </a>
           <a
-            href="https://www.linkedin.com"
-            target="_blank"
-            rel="noreferrer"
+            href="mailto:me@tnad.xyz"
             style={{
               backgroundImage:
                 'url(https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXS4XGXBVXT4CK0NG024Y15.svg)',
@@ -582,40 +592,69 @@ export default function App() {
 function renderProjectContent(projectName, options = {}) {
   const { showTag = true, isMobile = false } = options;
 
-  switch (projectName) {
-    case 'Flows':
-      return <FlowsProject showTag={showTag} isMobile={isMobile} />;
-    case 'Kakimasu':
-      return <KakimasuProject showTag={showTag} isMobile={isMobile} />;
-    case 'Stack':
-      return <StackProject showTag={showTag} isMobile={isMobile} />;
-    case 'Voicenotes':
-      return <VoicenotesProject showTag={showTag} isMobile={isMobile} />;
-    case 'WorkFeed':
-      return <WorkFeedProject showTag={showTag} isMobile={isMobile} />;
-    case 'Switch UI':
-      return <SwitchUIProject showTag={showTag} isMobile={isMobile} />;
-    case 'Aurora Retreat':
-      return <AuroraRetreatProject showTag={showTag} isMobile={isMobile} />;
-    default:
-      return (
-        <div
-          style={{
-            alignItems: 'center',
-            color: '#C4C4C4',
-            display: 'flex',
-            fontFamily: '"Google Sans Flex", system-ui, sans-serif',
-            fontSize: '18px',
-            gap: '8px',
-            justifyContent: 'center',
-            lineHeight: '140%',
-          }}
-        >
-          <span>{projectName}</span>
-          <span style={{ color: '#000000' }}>coming soon</span>
-        </div>
-      );
+  const projectComponent = (() => {
+    switch (projectName) {
+      case 'Flows':
+        return <FlowsProject showTag={showTag} isMobile={isMobile} />;
+      case 'Kakimasu':
+        return <KakimasuProject showTag={showTag} isMobile={isMobile} />;
+      case 'Stack':
+        return <StackProject showTag={showTag} isMobile={isMobile} />;
+      case 'Voicenotes':
+        return <VoicenotesProject showTag={showTag} isMobile={isMobile} />;
+      case 'WorkFeed':
+        return <WorkFeedProject showTag={showTag} isMobile={isMobile} />;
+      case 'Switch UI':
+        return <SwitchUIProject showTag={showTag} isMobile={isMobile} />;
+      case 'Aurora Retreat':
+        return <AuroraRetreatProject showTag={showTag} isMobile={isMobile} />;
+      default:
+        return (
+          <div
+            style={{
+              alignItems: 'center',
+              color: '#C4C4C4',
+              display: 'flex',
+              fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+              fontSize: '18px',
+              gap: '8px',
+              justifyContent: 'center',
+              lineHeight: '140%',
+            }}
+          >
+            <span>{projectName}</span>
+            <span style={{ color: '#000000' }}>coming soon</span>
+          </div>
+        );
+    }
+  })();
+
+  if (!projectLinks[projectName]) {
+    return projectComponent;
   }
+
+  return <ProjectLinkWrapper href={projectLinks[projectName]}>{projectComponent}</ProjectLinkWrapper>;
+}
+
+function ProjectLinkWrapper({ href, children }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      style={{
+        alignItems: 'center',
+        color: 'inherit',
+        display: 'flex',
+        height: '100%',
+        justifyContent: 'center',
+        textDecoration: 'none',
+        width: '100%',
+      }}
+    >
+      {children}
+    </a>
+  );
 }
 
 function MobileProjectFrame({
