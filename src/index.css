@@ -174,7 +174,6 @@ body {
     --project-mobile-padding: 6px 4px;
     max-width: var(--project-mobile-width, min(360px, 94vw));
     width: var(--project-mobile-width, min(360px, 94vw));
-    max-height: 386px;
     height: auto;
     margin-inline: auto;
     padding: var(--project-mobile-padding, 6px 4px);

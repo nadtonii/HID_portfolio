@@ -627,7 +627,20 @@ function MobileProjectFrame({
   coverStyle = {},
   frameStyle = {},
   showTag = true,
+  containerWidth = 360,
+  containerHeight,
+  coverDimensions = {},
+  frameDimensions = {},
 }) {
+  const resolvedWidth = `min(100%, ${containerWidth}px)`;
+  const resolvedFrameHeight = frameDimensions.height ?? 276;
+  const resolvedFrameWidth = frameDimensions.width ?? containerWidth;
+  const resolvedCoverHeight = coverDimensions.height ?? 250;
+  const resolvedCoverWidth = coverDimensions.width ?? 336;
+  const resolvedCoverTranslate = coverDimensions.translate ?? '12px 13px';
+  const resolvedFrameTranslate = frameDimensions.translate ?? '0px 0px';
+  const resolvedContainerHeight = containerHeight ?? resolvedFrameHeight;
+
   return (
     <div
       style={{
@@ -642,8 +655,7 @@ function MobileProjectFrame({
         justifyContent: 'start',
         MozOsxFontSmoothing: 'grayscale',
         WebkitFontSmoothing: 'antialiased',
-        width: '100%',
-        maxWidth: '360px',
+        width: resolvedWidth,
       }}
     >
       <div
@@ -651,9 +663,8 @@ function MobileProjectFrame({
           boxSizing: 'border-box',
           contain: 'layout',
           flexShrink: '0',
-          height: '276px',
-          width: '100%',
-          maxWidth: '360px',
+          height: `${resolvedContainerHeight}px`,
+          width: resolvedWidth,
           position: 'relative',
         }}
       >
@@ -663,12 +674,12 @@ function MobileProjectFrame({
             backgroundPosition: 'center',
             backgroundSize: 'cover',
             boxSizing: 'border-box',
-            height: '250px',
+            height: `${resolvedCoverHeight}px`,
             left: '0',
             position: 'absolute',
             top: '0',
-            translate: '12px 13px',
-            width: '336px',
+            translate: resolvedCoverTranslate,
+            width: `${resolvedCoverWidth}px`,
             ...coverStyle,
           }}
         />
@@ -678,12 +689,12 @@ function MobileProjectFrame({
             backgroundPosition: 'center',
             backgroundSize: 'cover',
             boxSizing: 'border-box',
-            height: '276px',
+            height: `${resolvedFrameHeight}px`,
             left: '0',
             position: 'absolute',
             top: '0',
-            width: '100%',
-            maxWidth: '360px',
+            translate: resolvedFrameTranslate,
+            width: `${resolvedFrameWidth}px`,
             ...frameStyle,
           }}
         />
@@ -700,10 +711,10 @@ function MobileProjectFrame({
           height: 'fit-content',
           justifyContent: 'center',
           paddingBlock: '9px',
-          width: '100%',
-          maxWidth: '360px',
+          width: resolvedWidth,
           gap: '6px',
           marginTop: '32px',
+          minHeight: '72px',
         }}
       >
         <div
@@ -907,7 +918,10 @@ function KakimasuProject({ showTag, isMobile }) {
         description={'Product Design,\nResearch, Case Study'}
         coverImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXTP56G76PV37A0A365TXK0.png"
         frameImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXSN5F8D8968GAT411JQM2T.png"
-        coverStyle={{ borderRadius: '18px' }}
+        containerWidth={189}
+        containerHeight={386}
+        coverDimensions={{ width: 172, height: 372, translate: '8px 7px' }}
+        frameDimensions={{ width: 188, height: 386 }}
         showTag={showTag}
       />
     );
@@ -1040,7 +1054,10 @@ function StackProject({ showTag, isMobile }) {
         description={'Product Design,\nResearch, Case Study'}
         coverImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXVQ2G3ATX03SYABW92K6N6.png"
         frameImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXSN5F8D8968GAT411JQM2T.png"
-        coverStyle={{ borderRadius: '18px' }}
+        containerWidth={189}
+        containerHeight={386}
+        coverDimensions={{ width: 172, height: 372, translate: '8px 7px' }}
+        frameDimensions={{ width: 188, height: 386 }}
         showTag={showTag}
       />
     );
@@ -1173,7 +1190,10 @@ function VoicenotesProject({ showTag, isMobile }) {
         description={'Product Design,\nPlayground, Braindump'}
         coverImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXWGR2XWWMRK4TZFAYC0J1N.png"
         frameImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXSN5F8D8968GAT411JQM2T.png"
-        coverStyle={{ borderRadius: '18px' }}
+        containerWidth={189}
+        containerHeight={386}
+        coverDimensions={{ width: 172, height: 372, translate: '8px 7px' }}
+        frameDimensions={{ width: 188, height: 386 }}
         showTag={showTag}
       />
     );
