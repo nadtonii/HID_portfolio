@@ -702,19 +702,17 @@ function MobileProjectFrame({
       <div
         className={`mobile-tagline ${showTag ? 'visible' : ''}`}
         style={{
-          alignItems: 'flex-start',
+          alignItems: 'center',
           boxSizing: 'border-box',
           contain: 'layout',
           display: 'flex',
           flexDirection: 'column',
           flexShrink: '0',
           height: 'fit-content',
-          justifyContent: 'center',
-          paddingBlock: '9px',
-          width: resolvedWidth,
-          gap: '6px',
+          justifyContent: 'start',
+          gap: '8px',
+          width: 'fit-content',
           marginTop: '32px',
-          minHeight: '72px',
         }}
       >
         <div
@@ -723,13 +721,13 @@ function MobileProjectFrame({
             color: '#000000',
             flexShrink: '0',
             fontFamily: '"Google Sans Flex", system-ui, sans-serif',
-            fontSize: '14px',
+            fontSize: '20px',
             fontVariationSettings:
-              '"wght" 500, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
-            fontWeight: 500,
+              '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
+            fontWeight: 400,
             height: 'fit-content',
             lineHeight: '140%',
-            textAlign: 'left',
+            textAlign: 'center',
             whiteSpace: 'pre',
             width: 'fit-content',
           }}
@@ -738,41 +736,55 @@ function MobileProjectFrame({
         </div>
         <div
           style={{
+            alignItems: 'center',
             boxSizing: 'border-box',
-            color: '#000000',
+            contain: 'layout',
+            display: 'flex',
+            flexDirection: 'column',
             flexShrink: '0',
-            fontFamily: '"Google Sans Flex", system-ui, sans-serif',
-            fontSize: '12px',
-            fontVariationSettings:
-              '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
-            fontWeight: 400,
             height: 'fit-content',
-            lineHeight: '140%',
-            textAlign: 'left',
-            whiteSpace: 'pre',
+            justifyContent: 'center',
             width: 'fit-content',
           }}
         >
-          {year}
-        </div>
-        <div
-          style={{
-            boxSizing: 'border-box',
-            color: '#C4C4C4',
-            flexShrink: '0',
-            fontFamily: '"Google Sans Flex", system-ui, sans-serif',
-            fontSize: '12px',
-            fontVariationSettings:
-              '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
-            fontWeight: 400,
-            height: 'fit-content',
-            lineHeight: '140%',
-            textAlign: 'left',
-            whiteSpace: 'pre',
-            width: 'fit-content',
-          }}
-        >
-          {description}
+          <div
+            style={{
+              boxSizing: 'border-box',
+              color: '#000000',
+              flexShrink: '0',
+              fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+              fontSize: '12px',
+              fontVariationSettings:
+                '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
+              fontWeight: 400,
+              height: 'fit-content',
+              lineHeight: '140%',
+              textAlign: 'center',
+              whiteSpace: 'pre',
+              width: 'fit-content',
+            }}
+          >
+            {year}
+          </div>
+          <div
+            style={{
+              boxSizing: 'border-box',
+              color: '#C4C4C4',
+              flexShrink: '0',
+              fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+              fontSize: '12px',
+              fontVariationSettings:
+                '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
+              fontWeight: 400,
+              height: 'fit-content',
+              lineHeight: '140%',
+              textAlign: 'center',
+              whiteSpace: 'pre',
+              width: 'fit-content',
+            }}
+          >
+            {description}
+          </div>
         </div>
       </div>
     </div>
