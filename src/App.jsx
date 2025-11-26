@@ -1514,8 +1514,8 @@ function SwitchUIProject({ showTag, isMobile }) {
         frameImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXXB2Z80MJHHM0KZD2S7NRF.png"
         containerWidth={360}
         containerHeight={153}
-        coverDimensions={{ width: 240, height: 135, translate: '60px 9px' }}
-        frameDimensions={{ width: 360, height: 153 }}
+        coverDimensions={{ width: 360, height: 153, translate: '0px 0px' }}
+        frameDimensions={{ width: 240, height: 135, translate: '60px 9px' }}
         showTag={showTag}
       />
     );
