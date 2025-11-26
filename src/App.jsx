@@ -20,10 +20,14 @@ const projectDimensions = {
   'Aurora Retreat': { width: 1033 },
 };
 
-const MOBILE_MAX_WIDTH = 350;
-
 const projectMobileLayouts = {
   Flows: { mobileWidth: 360, mobileScale: 1 },
+  Kakimasu: { mobileWidth: 360, mobileScale: 1 },
+  Stack: { mobileWidth: 360, mobileScale: 1 },
+  Voicenotes: { mobileWidth: 360, mobileScale: 1 },
+  WorkFeed: { mobileWidth: 360, mobileScale: 1 },
+  'Switch UI': { mobileWidth: 360, mobileScale: 1 },
+  'Aurora Retreat': { mobileWidth: 360, mobileScale: 1 },
 };
 
 export default function App() {
@@ -274,9 +278,7 @@ export default function App() {
   const renderFrame = (projectName, transitionClass, tagVisible, frameKey) => {
     const baseWidth = projectDimensions[projectName]?.width || 834;
     const overrides = projectMobileLayouts[projectName] || {};
-    const mobileScale = isMobile
-      ? overrides.mobileScale ?? Math.min(1, MOBILE_MAX_WIDTH / baseWidth)
-      : 1;
+    const mobileScale = isMobile ? overrides.mobileScale ?? 1 : 1;
     const mobileWidth = isMobile ? overrides.mobileWidth : undefined;
     const desktopBottomPadding =
       !isMobile && ['Kakimasu', 'Stack', 'Voicenotes'].includes(projectName)
@@ -686,83 +688,82 @@ function MobileProjectFrame({
           }}
         />
       </div>
-      {showTag && (
+      <div
+        className={`mobile-tagline ${showTag ? 'visible' : ''}`}
+        style={{
+          alignItems: 'flex-start',
+          boxSizing: 'border-box',
+          contain: 'layout',
+          display: 'flex',
+          flexDirection: 'column',
+          flexShrink: '0',
+          height: 'fit-content',
+          justifyContent: 'center',
+          paddingBlock: '9px',
+          width: '100%',
+          maxWidth: '360px',
+          gap: '6px',
+          marginTop: '32px',
+        }}
+      >
         <div
           style={{
-            alignItems: 'flex-start',
             boxSizing: 'border-box',
-            contain: 'layout',
-            display: 'flex',
-            flexDirection: 'column',
+            color: '#000000',
             flexShrink: '0',
+            fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+            fontSize: '14px',
+            fontVariationSettings:
+              '"wght" 500, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
+            fontWeight: 500,
             height: 'fit-content',
-            justifyContent: 'center',
-            paddingBlock: '9px',
-            width: '100%',
-            maxWidth: '360px',
-            gap: '6px',
-            marginTop: '32px',
+            lineHeight: '140%',
+            textAlign: 'left',
+            whiteSpace: 'pre',
+            width: 'fit-content',
           }}
         >
-          <div
-            style={{
-              boxSizing: 'border-box',
-              color: '#000000',
-              flexShrink: '0',
-              fontFamily: '"Google Sans Flex", system-ui, sans-serif',
-              fontSize: '14px',
-              fontVariationSettings:
-                '"wght" 500, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
-              fontWeight: 500,
-              height: 'fit-content',
-              lineHeight: '140%',
-              textAlign: 'left',
-              whiteSpace: 'pre',
-              width: 'fit-content',
-            }}
-          >
-            {title}
-          </div>
-          <div
-            style={{
-              boxSizing: 'border-box',
-              color: '#000000',
-              flexShrink: '0',
-              fontFamily: '"Google Sans Flex", system-ui, sans-serif',
-              fontSize: '12px',
-              fontVariationSettings:
-                '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
-              fontWeight: 400,
-              height: 'fit-content',
-              lineHeight: '140%',
-              textAlign: 'left',
-              whiteSpace: 'pre',
-              width: 'fit-content',
-            }}
-          >
-            {year}
-          </div>
-          <div
-            style={{
-              boxSizing: 'border-box',
-              color: '#C4C4C4',
-              flexShrink: '0',
-              fontFamily: '"Google Sans Flex", system-ui, sans-serif',
-              fontSize: '12px',
-              fontVariationSettings:
-                '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
-              fontWeight: 400,
-              height: 'fit-content',
-              lineHeight: '140%',
-              textAlign: 'left',
-              whiteSpace: 'pre',
-              width: 'fit-content',
-            }}
-          >
-            {description}
-          </div>
+          {title}
         </div>
-      )}
+        <div
+          style={{
+            boxSizing: 'border-box',
+            color: '#000000',
+            flexShrink: '0',
+            fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+            fontSize: '12px',
+            fontVariationSettings:
+              '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
+            fontWeight: 400,
+            height: 'fit-content',
+            lineHeight: '140%',
+            textAlign: 'left',
+            whiteSpace: 'pre',
+            width: 'fit-content',
+          }}
+        >
+          {year}
+        </div>
+        <div
+          style={{
+            boxSizing: 'border-box',
+            color: '#C4C4C4',
+            flexShrink: '0',
+            fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+            fontSize: '12px',
+            fontVariationSettings:
+              '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
+            fontWeight: 400,
+            height: 'fit-content',
+            lineHeight: '140%',
+            textAlign: 'left',
+            whiteSpace: 'pre',
+            width: 'fit-content',
+          }}
+        >
+          {description}
+        </div>
+      </div>
     </div>
   );
 }
