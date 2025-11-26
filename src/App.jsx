@@ -20,10 +20,14 @@ const projectDimensions = {
   'Aurora Retreat': { width: 1033 },
 };
 
-const MOBILE_MAX_WIDTH = 350;
-
 const projectMobileLayouts = {
   Flows: { mobileWidth: 360, mobileScale: 1 },
+  Kakimasu: { mobileWidth: 360, mobileScale: 1 },
+  Stack: { mobileWidth: 360, mobileScale: 1 },
+  Voicenotes: { mobileWidth: 360, mobileScale: 1 },
+  WorkFeed: { mobileWidth: 360, mobileScale: 1 },
+  'Switch UI': { mobileWidth: 360, mobileScale: 1 },
+  'Aurora Retreat': { mobileWidth: 360, mobileScale: 1 },
 };
 
 export default function App() {
@@ -44,7 +48,6 @@ export default function App() {
   const touchCurrentXRef = useRef(null);
   const [sidePadding, setSidePadding] = useState({ left: 20, right: 20 });
   const [isMobile, setIsMobile] = useState(false);
-  const [mobileStageHeight, setMobileStageHeight] = useState(null);
   const [desktopStageHeight, setDesktopStageHeight] = useState(null);
   const [navHeight, setNavHeight] = useState(0);
   const navRef = useRef(null);
@@ -109,26 +112,6 @@ export default function App() {
     centerSelected(selectedIndex);
   }, [selectedIndex]);
 
-  const updateMobileStageHeight = (navHeightValue, carouselHeightValue) => {
-    if (!isMobile) return;
-
-    const navHeight = navHeightValue ?? navRef.current?.offsetHeight ?? 0;
-    const carouselHeight =
-      (carouselHeightValue ?? carouselRef.current?.offsetHeight ?? 0) || 0;
-    const viewportHeight = window.visualViewport?.height || window.innerHeight || 0;
-    const paddingTop = navHeight + 8;
-    const paddingBottom = 20;
-    const stackGap = 8;
-    const safetyInset = 6;
-    const availableHeight =
-      viewportHeight - paddingTop - paddingBottom - stackGap - carouselHeight - safetyInset;
-    const baselineHeight =
-      availableHeight > 360 ? Math.min(availableHeight, 640) : availableHeight;
-    const clampedHeight = Math.max(300, baselineHeight);
-
-    setMobileStageHeight(clampedHeight);
-  };
-
   const updateDesktopStageHeight = (navHeightValue, carouselHeightValue) => {
     if (isMobile) return;
 
@@ -164,7 +147,6 @@ export default function App() {
       centerSelected(selectedIndex);
       const measuredNavHeight = updateNavHeight();
       const measuredCarouselHeight = carouselRef.current?.offsetHeight || 0;
-      updateMobileStageHeight(measuredNavHeight, measuredCarouselHeight);
       updateDesktopStageHeight(measuredNavHeight, measuredCarouselHeight);
     };
 
@@ -179,9 +161,7 @@ export default function App() {
     const measuredNavHeight = updateNavHeight();
     const measuredCarouselHeight = carouselRef.current?.offsetHeight || 0;
 
-    if (isMobile) {
-      updateMobileStageHeight(measuredNavHeight, measuredCarouselHeight);
-    } else {
+    if (!isMobile) {
       updateDesktopStageHeight(measuredNavHeight, measuredCarouselHeight);
     }
   }, [isMobile]);
@@ -298,9 +278,7 @@ export default function App() {
   const renderFrame = (projectName, transitionClass, tagVisible, frameKey) => {
     const baseWidth = projectDimensions[projectName]?.width || 834;
     const overrides = projectMobileLayouts[projectName] || {};
-    const mobileScale = isMobile
-      ? overrides.mobileScale ?? Math.min(1, MOBILE_MAX_WIDTH / baseWidth)
-      : 1;
+    const mobileScale = isMobile ? overrides.mobileScale ?? 1 : 1;
     const mobileWidth = isMobile ? overrides.mobileWidth : undefined;
     const desktopBottomPadding =
       !isMobile && ['Kakimasu', 'Stack', 'Voicenotes'].includes(projectName)
@@ -324,49 +302,82 @@ export default function App() {
     );
   };
 
+  const containerClassName = `app-container${isMobile ? ' mobile-layout' : ''}`;
+  const navClassName = isMobile ? 'mobile-nav' : '';
+
+  const pageControls = (
+    <div className="mobile-page-controls">
+      {projects.map((project, index) => (
+        <button
+          key={project}
+          type="button"
+          className={`mobile-page-control-button${
+            index === selectedIndex ? ' active' : ''
+          }`}
+          aria-label={`Go to ${project}`}
+          onClick={() => handleSelectProject(index)}
+        />
+      ))}
+    </div>
+  );
+
   return (
     <div
-      style={{
-        backgroundColor: '#FFFFFF',
-        height: isMobile ? '100dvh' : '100vh',
-        minHeight: '100vh',
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        overflow: 'hidden',
-        position: 'relative',
-      }}
+      className={containerClassName}
+      style={
+        isMobile
+          ? {
+              '--mobile-nav-height': `${navHeight}px`,
+              overflow: 'hidden',
+              position: 'relative',
+            }
+          : {
+              backgroundColor: '#FFFFFF',
+              height: '100vh',
+              minHeight: '100vh',
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'flex-start',
+              alignItems: 'center',
+              overflow: 'hidden',
+              position: 'relative',
+            }
+      }
     >
       <nav
         ref={navRef}
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          alignItems: 'start',
-          boxSizing: 'border-box',
-          contain: 'layout',
-          display: 'flex',
-          flexDirection: 'column',
-          fontSynthesis: 'none',
-          gap: '8px',
-          height: 'fit-content',
-          justifyContent: 'center',
-          MozOsxFontSmoothing: 'grayscale',
-          paddingBottom: '0px',
-          paddingLeft: '32px',
-          paddingRight: '20px',
-          paddingTop: '20px',
-          WebkitFontSmoothing: 'antialiased',
-          width: '100%',
-          backgroundColor: 'transparent',
-          border: 'none',
-          boxShadow: 'none',
-          zIndex: 10,
-        }}
+        className={navClassName}
+        style={
+          isMobile
+            ? undefined
+            : {
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                alignItems: 'start',
+                boxSizing: 'border-box',
+                contain: 'layout',
+                display: 'flex',
+                flexDirection: 'column',
+                fontSynthesis: 'none',
+                gap: '8px',
+                height: 'fit-content',
+                justifyContent: 'center',
+                MozOsxFontSmoothing: 'grayscale',
+                paddingBottom: '0px',
+                paddingLeft: '32px',
+                paddingRight: '20px',
+                paddingTop: '20px',
+                WebkitFontSmoothing: 'antialiased',
+                width: '100%',
+                backgroundColor: 'transparent',
+                border: 'none',
+                boxShadow: 'none',
+                zIndex: 10,
+              }
+        }
       >
         <div
           style={{
@@ -473,18 +484,16 @@ export default function App() {
           gap: '8px',
           width: '100%',
           flex: '1 1 auto',
-          paddingInline: '20px',
-          paddingBottom: isMobile ? '20px' : '28px',
-          paddingTop: `${(navHeight || 0) + 8}px`,
+          paddingInline: isMobile ? '0' : '20px',
+          paddingBottom: isMobile ? '0' : '28px',
+          paddingTop: isMobile ? '0' : `${(navHeight || 0) + 8}px`,
           boxSizing: 'border-box',
         }}
       >
         <div
-          className="project-stage"
+          className={`project-stage ${isMobile ? 'mobile-stage' : ''}`}
           style={{
-            height: isMobile
-              ? mobileStageHeight || undefined
-              : desktopStageHeight || undefined,
+            height: isMobile ? undefined : desktopStageHeight || undefined,
           }}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
@@ -507,62 +516,65 @@ export default function App() {
           )}
         </div>
 
-        <div
-          ref={carouselRef}
-          className="project-carousel"
-          style={{
-            alignItems: 'center',
-            boxSizing: 'border-box',
-            contain: 'layout',
-            display: 'flex',
-            flexDirection: 'row',
-            fontSynthesis: 'none',
-            gap: '40px',
-            height: 'fit-content',
-            justifyContent: 'start',
-            MozOsxFontSmoothing: 'grayscale',
-            paddingBlock: '20px',
-            paddingInline: `${sidePadding.left}px ${sidePadding.right}px`,
-            WebkitFontSmoothing: 'antialiased',
-            width: '100%',
-            overflowX: 'auto',
-          }}
-        >
-          {projects.map((project, index) => (
-            <button
-              key={project}
-              ref={(element) => {
-                itemRefs.current[index] = element;
-              }}
-              onClick={() => handleSelectProject(index)}
-              onMouseDown={() => setPressedIndex(index)}
-              onMouseUp={() => setPressedIndex(null)}
-              onMouseLeave={() => setPressedIndex(null)}
-              style={{
-                background: 'transparent',
-                border: 'none',
-                padding: 0,
-                boxSizing: 'border-box',
-                color: selectedIndex === index ? '#000000' : '#C4C4C4',
-                flexShrink: 0,
-                fontFamily: '"Google Sans Flex", system-ui, sans-serif',
-                fontSize: '20px',
-                fontVariationSettings:
-                  '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
-                fontWeight: 400,
-                lineHeight: '140%',
-                whiteSpace: 'pre',
-                width: 'fit-content',
-                cursor: 'pointer',
-                transition: 'color 150ms ease, transform 120ms ease',
-                transform: pressedIndex === index ? 'scale(0.94)' : 'scale(1)',
-              }}
-            >
-              {project}
-            </button>
-          ))}
-        </div>
+        {!isMobile && (
+          <div
+            ref={carouselRef}
+            className="project-carousel"
+            style={{
+              alignItems: 'center',
+              boxSizing: 'border-box',
+              contain: 'layout',
+              display: 'flex',
+              flexDirection: 'row',
+              fontSynthesis: 'none',
+              gap: '40px',
+              height: 'fit-content',
+              justifyContent: 'start',
+              MozOsxFontSmoothing: 'grayscale',
+              paddingBlock: '20px',
+              paddingInline: `${sidePadding.left}px ${sidePadding.right}px`,
+              WebkitFontSmoothing: 'antialiased',
+              width: '100%',
+              overflowX: 'auto',
+            }}
+          >
+            {projects.map((project, index) => (
+              <button
+                key={project}
+                ref={(element) => {
+                  itemRefs.current[index] = element;
+                }}
+                onClick={() => handleSelectProject(index)}
+                onMouseDown={() => setPressedIndex(index)}
+                onMouseUp={() => setPressedIndex(null)}
+                onMouseLeave={() => setPressedIndex(null)}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  padding: 0,
+                  boxSizing: 'border-box',
+                  color: selectedIndex === index ? '#000000' : '#C4C4C4',
+                  flexShrink: 0,
+                  fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+                  fontSize: '20px',
+                  fontVariationSettings:
+                    '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
+                  fontWeight: 400,
+                  lineHeight: '140%',
+                  whiteSpace: 'pre',
+                  width: 'fit-content',
+                  cursor: 'pointer',
+                  transition: 'color 150ms ease, transform 120ms ease',
+                  transform: pressedIndex === index ? 'scale(0.94)' : 'scale(1)',
+                }}
+              >
+                {project}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
+      {isMobile && pageControls}
     </div>
   );
 }
@@ -574,17 +586,17 @@ function renderProjectContent(projectName, options = {}) {
     case 'Flows':
       return <FlowsProject showTag={showTag} isMobile={isMobile} />;
     case 'Kakimasu':
-      return <KakimasuProject showTag={showTag} />;
+      return <KakimasuProject showTag={showTag} isMobile={isMobile} />;
     case 'Stack':
-      return <StackProject showTag={showTag} />;
+      return <StackProject showTag={showTag} isMobile={isMobile} />;
     case 'Voicenotes':
-      return <VoicenotesProject showTag={showTag} />;
+      return <VoicenotesProject showTag={showTag} isMobile={isMobile} />;
     case 'WorkFeed':
-      return <WorkFeedProject showTag={showTag} />;
+      return <WorkFeedProject showTag={showTag} isMobile={isMobile} />;
     case 'Switch UI':
-      return <SwitchUIProject showTag={showTag} />;
+      return <SwitchUIProject showTag={showTag} isMobile={isMobile} />;
     case 'Aurora Retreat':
-      return <AuroraRetreatProject showTag={showTag} />;
+      return <AuroraRetreatProject showTag={showTag} isMobile={isMobile} />;
     default:
       return (
         <div
@@ -606,121 +618,210 @@ function renderProjectContent(projectName, options = {}) {
   }
 }
 
-function FlowsProject({ showTag, isMobile }) {
-  if (isMobile) {
-    return (
+function MobileProjectFrame({
+  title,
+  year,
+  description,
+  coverImage,
+  frameImage,
+  coverStyle = {},
+  frameStyle = {},
+  showTag = true,
+  containerWidth = 360,
+  containerHeight,
+  coverDimensions = {},
+  frameDimensions = {},
+  additionalLayers = [],
+}) {
+  const resolvedWidth = `min(100%, ${containerWidth}px)`;
+  const resolvedFrameHeight = frameDimensions.height ?? 276;
+  const resolvedFrameWidth = frameDimensions.width ?? containerWidth;
+  const resolvedCoverHeight = coverDimensions.height ?? 250;
+  const resolvedCoverWidth = coverDimensions.width ?? 336;
+  const resolvedCoverTranslate = coverDimensions.translate ?? '12px 13px';
+  const resolvedFrameTranslate = frameDimensions.translate ?? '0px 0px';
+  const resolvedContainerHeight = containerHeight ?? resolvedFrameHeight;
+
+  return (
+    <div
+      style={{
+        alignItems: 'center',
+        boxSizing: 'border-box',
+        contain: 'layout',
+        display: 'flex',
+        flexDirection: 'column',
+        fontSynthesis: 'none',
+        gap: 5,
+        height: 'fit-content',
+        justifyContent: 'start',
+        MozOsxFontSmoothing: 'grayscale',
+        WebkitFontSmoothing: 'antialiased',
+        width: resolvedWidth,
+      }}
+    >
       <div
+        style={{
+          boxSizing: 'border-box',
+          contain: 'layout',
+          flexShrink: '0',
+          height: `${resolvedContainerHeight}px`,
+          width: resolvedWidth,
+          position: 'relative',
+        }}
+      >
+        <div
+          style={{
+            backgroundImage: `url(${coverImage})`,
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+            boxSizing: 'border-box',
+            height: `${resolvedCoverHeight}px`,
+            left: '0',
+            position: 'absolute',
+            top: '0',
+            translate: resolvedCoverTranslate,
+            width: `${resolvedCoverWidth}px`,
+            ...coverStyle,
+          }}
+        />
+        <div
+          style={{
+            backgroundImage: `url(${frameImage})`,
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+            boxSizing: 'border-box',
+            height: `${resolvedFrameHeight}px`,
+            left: '0',
+            position: 'absolute',
+            top: '0',
+            translate: resolvedFrameTranslate,
+            width: `${resolvedFrameWidth}px`,
+            ...frameStyle,
+          }}
+        />
+        {additionalLayers.map((layer, index) => (
+          <div
+            // eslint-disable-next-line react/no-array-index-key
+            key={index}
+            style={{
+              backgroundImage: layer.image ? `url(${layer.image})` : undefined,
+              backgroundPosition: 'center',
+              backgroundSize: 'cover',
+              boxSizing: 'border-box',
+              height: layer.height,
+              width: layer.width,
+              left: '0',
+              position: 'absolute',
+              top: '0',
+              translate: layer.translate ?? '0px 0px',
+              backgroundColor: layer.backgroundColor,
+            }}
+          />
+        ))}
+      </div>
+      <div
+        className={`mobile-tagline ${showTag ? 'visible' : ''}`}
         style={{
           alignItems: 'center',
           boxSizing: 'border-box',
           contain: 'layout',
           display: 'flex',
           flexDirection: 'column',
-          fontSynthesis: 'none',
-          gap: 5,
+          flexShrink: '0',
           height: 'fit-content',
           justifyContent: 'start',
-          MozOsxFontSmoothing: 'grayscale',
-          WebkitFontSmoothing: 'antialiased',
+          gap: '8px',
           width: 'fit-content',
+          marginTop: '32px',
         }}
       >
         <div
           style={{
             boxSizing: 'border-box',
-            contain: 'layout',
+            color: '#000000',
             flexShrink: '0',
-            height: '276px',
-            width: '360px',
-            position: 'relative',
+            fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+            fontSize: '20px',
+            fontVariationSettings:
+              '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
+            fontWeight: 400,
+            height: 'fit-content',
+            lineHeight: '140%',
+            textAlign: 'center',
+            whiteSpace: 'pre',
+            width: 'fit-content',
+          }}
+        >
+          {title}
+        </div>
+        <div
+          style={{
+            alignItems: 'center',
+            boxSizing: 'border-box',
+            contain: 'layout',
+            display: 'flex',
+            flexDirection: 'column',
+            flexShrink: '0',
+            height: 'fit-content',
+            justifyContent: 'center',
+            width: 'fit-content',
           }}
         >
           <div
             style={{
-              backgroundImage:
-                'url(https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXV3CVX9NTXB88Y3K21XW86.png)',
-              backgroundPosition: 'center',
-              backgroundSize: 'cover',
               boxSizing: 'border-box',
-              height: '250px',
-              left: '0',
-              position: 'absolute',
-              top: '0',
-              translate: '12px 13px',
-              width: '336px',
-            }}
-          />
-          <div
-            style={{
-              backgroundImage:
-                'url(https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXSWRQE7V2HAJS10DNMFAVH.png)',
-              backgroundPosition: 'center',
-              backgroundSize: 'cover',
-              boxSizing: 'border-box',
-              height: '276px',
-              left: '0',
-              position: 'absolute',
-              top: '0',
-              width: '360px',
-            }}
-          />
-        </div>
-        {showTag && (
-          <div
-            style={{
-              alignItems: 'center',
-              boxSizing: 'border-box',
-              contain: 'layout',
-              display: 'flex',
-              flexDirection: 'column',
+              color: '#000000',
               flexShrink: '0',
+              fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+              fontSize: '12px',
+              fontVariationSettings:
+                '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
+              fontWeight: 400,
               height: 'fit-content',
-              justifyContent: 'center',
-              paddingBlock: '9px',
+              lineHeight: '140%',
+              textAlign: 'center',
+              whiteSpace: 'pre',
               width: 'fit-content',
             }}
           >
-            <div
-              style={{
-                boxSizing: 'border-box',
-                color: '#000000',
-                flexShrink: '0',
-                fontFamily: '"Google Sans Flex", system-ui, sans-serif',
-                fontSize: '12px',
-                fontVariationSettings:
-                  '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
-                fontWeight: 400,
-                height: 'fit-content',
-                lineHeight: '140%',
-                textAlign: 'center',
-                whiteSpace: 'pre',
-                width: 'fit-content',
-              }}
-            >
-              2026
-            </div>
-            <div
-              style={{
-                boxSizing: 'border-box',
-                color: '#C4C4C4',
-                flexShrink: '0',
-                fontFamily: '"Google Sans Flex", system-ui, sans-serif',
-                fontSize: '12px',
-                fontVariationSettings:
-                  '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
-                fontWeight: 400,
-                height: 'fit-content',
-                lineHeight: '140%',
-                textAlign: 'center',
-                whiteSpace: 'pre',
-                width: 'fit-content',
-              }}
-            >
-              {'Product Design,\nWeb development, AI'}
-            </div>
+            {year}
           </div>
-        )}
+          <div
+            style={{
+              boxSizing: 'border-box',
+              color: '#C4C4C4',
+              flexShrink: '0',
+              fontFamily: '"Google Sans Flex", system-ui, sans-serif',
+              fontSize: '12px',
+              fontVariationSettings:
+                '"wght" 400, "wdth" 100, "slnt" 0, "GRAD" 0, "ROND" 0',
+              fontWeight: 400,
+              height: 'fit-content',
+              lineHeight: '140%',
+              textAlign: 'center',
+              whiteSpace: 'pre',
+              width: 'fit-content',
+            }}
+          >
+            {description}
+          </div>
+        </div>
       </div>
+    </div>
+  );
+}
+
+function FlowsProject({ showTag, isMobile }) {
+  if (isMobile) {
+    return (
+      <MobileProjectFrame
+        title="Flows"
+        year="2026"
+        description={'Product Design,\nWeb development, AI'}
+        coverImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXV3CVX9NTXB88Y3K21XW86.png"
+        frameImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXSWRQE7V2HAJS10DNMFAVH.png"
+        showTag={showTag}
+      />
     );
   }
 
@@ -840,7 +941,24 @@ function FlowsProject({ showTag, isMobile }) {
   );
 }
 
-function KakimasuProject({ showTag }) {
+function KakimasuProject({ showTag, isMobile }) {
+  if (isMobile) {
+    return (
+      <MobileProjectFrame
+        title="Kakimasu"
+        year="2025"
+        description={'Product Design,\nResearch, Case Study'}
+        coverImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXTP56G76PV37A0A365TXK0.png"
+        frameImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXSN5F8D8968GAT411JQM2T.png"
+        containerWidth={189}
+        containerHeight={386}
+        coverDimensions={{ width: 172, height: 372, translate: '8px 7px' }}
+        frameDimensions={{ width: 188, height: 386 }}
+        showTag={showTag}
+      />
+    );
+  }
+
   return (
     <div
       style={{
@@ -959,7 +1077,24 @@ function KakimasuProject({ showTag }) {
   );
 }
 
-function StackProject({ showTag }) {
+function StackProject({ showTag, isMobile }) {
+  if (isMobile) {
+    return (
+      <MobileProjectFrame
+        title="Stack"
+        year="2024"
+        description={'Product Design,\nResearch, Case Study'}
+        coverImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXVQ2G3ATX03SYABW92K6N6.png"
+        frameImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXSN5F8D8968GAT411JQM2T.png"
+        containerWidth={189}
+        containerHeight={386}
+        coverDimensions={{ width: 172, height: 372, translate: '8px 7px' }}
+        frameDimensions={{ width: 188, height: 386 }}
+        showTag={showTag}
+      />
+    );
+  }
+
   return (
     <div
       style={{
@@ -1078,7 +1213,24 @@ function StackProject({ showTag }) {
   );
 }
 
-function VoicenotesProject({ showTag }) {
+function VoicenotesProject({ showTag, isMobile }) {
+  if (isMobile) {
+    return (
+      <MobileProjectFrame
+        title="Voicenotes"
+        year="2024"
+        description={'Product Design,\nPlayground, Braindump'}
+        coverImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXWGR2XWWMRK4TZFAYC0J1N.png"
+        frameImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXSN5F8D8968GAT411JQM2T.png"
+        containerWidth={189}
+        containerHeight={386}
+        coverDimensions={{ width: 172, height: 372, translate: '8px 7px' }}
+        frameDimensions={{ width: 188, height: 386 }}
+        showTag={showTag}
+      />
+    );
+  }
+
   return (
     <div
       style={{
@@ -1197,7 +1349,32 @@ function VoicenotesProject({ showTag }) {
   );
 }
 
-function WorkFeedProject({ showTag }) {
+function WorkFeedProject({ showTag, isMobile }) {
+  if (isMobile) {
+    return (
+      <MobileProjectFrame
+        title="WorkFeed"
+        year="2024"
+        description={'Product Design,\nPlayground, Braindump'}
+        coverImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXXQT9GW5CRRPTRV3GPWMX6.png"
+        frameImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXXP7FX3HA23V4M099JJ5CN.png"
+        containerWidth={360}
+        containerHeight={223}
+        coverDimensions={{ width: 285, height: 170, translate: '46px 26px' }}
+        frameDimensions={{ width: 360, height: 223 }}
+        additionalLayers={[
+          {
+            backgroundColor: '#FFFFFF',
+            height: '173px',
+            width: '10px',
+            translate: '322px 23px',
+          },
+        ]}
+        showTag={showTag}
+      />
+    );
+  }
+
   return (
     <div
       style={{
@@ -1326,7 +1503,24 @@ function WorkFeedProject({ showTag }) {
   );
 }
 
-function SwitchUIProject({ showTag }) {
+function SwitchUIProject({ showTag, isMobile }) {
+  if (isMobile) {
+    return (
+      <MobileProjectFrame
+        title="Switch UI"
+        year="2023"
+        description={'Product Design,\nPlayground, Braindump'}
+        coverImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXX9AFC1D81ZVT4PZZKV39S.png"
+        frameImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXXB2Z80MJHHM0KZD2S7NRF.png"
+        containerWidth={360}
+        containerHeight={153}
+        coverDimensions={{ width: 360, height: 153, translate: '0px 0px' }}
+        frameDimensions={{ width: 240, height: 135, translate: '60px 9px' }}
+        showTag={showTag}
+      />
+    );
+  }
+
   return (
     <div
       style={{
@@ -1444,7 +1638,24 @@ function SwitchUIProject({ showTag }) {
   );
 }
 
-function AuroraRetreatProject({ showTag }) {
+function AuroraRetreatProject({ showTag, isMobile }) {
+  if (isMobile) {
+    return (
+      <MobileProjectFrame
+        title="Aurora Retreat"
+        year="2023"
+        description={'Product Design,\nPlayground, Braindump'}
+        coverImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXY42VG80RBHBYW0SHEX23A.png"
+        frameImage="https://workers.paper.design/file-assets/01KACA23KJT6YCXQ7Y94ADCZE1/01KAXXP7FX3HA23V4M099JJ5CN.png"
+        containerWidth={360}
+        containerHeight={223}
+        coverDimensions={{ width: 267, height: 168, translate: '46px 29px' }}
+        frameDimensions={{ width: 360, height: 223 }}
+        showTag={showTag}
+      />
+    );
+  }
+
   return (
     <div
       style={{

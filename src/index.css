@@ -87,6 +87,34 @@ body {
   transform: translateY(0);
 }
 
+.mobile-tagline {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 260ms ease, transform 260ms cubic-bezier(0.33, 1, 0.68, 1);
+  visibility: hidden;
+}
+
+.mobile-tagline.visible {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+}
+
+.app-container {
+  background-color: #ffffff;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.app-container.mobile-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-inline: 20px;
+  padding-bottom: 20px;
+  min-height: 100dvh;
+}
+
 @media (max-width: 768px) {
   .project-tag {
     display: none !important;
@@ -100,6 +128,41 @@ body {
     padding-inline: 12px;
   }
 
+  .mobile-layout {
+    align-items: center;
+  }
+
+  .mobile-nav {
+    position: static;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    padding: 20px 0 0 0;
+    box-sizing: border-box;
+    align-items: flex-start;
+  }
+
+  .mobile-stage {
+    height: calc(100dvh - var(--mobile-nav-height, 0px) - 72px);
+    min-height: 360px;
+    max-height: 640px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .mobile-carousel {
+    padding-inline: 8px;
+    width: 100%;
+    scroll-snap-type: x mandatory;
+    gap: 24px;
+  }
+
+  .mobile-carousel-item {
+    scroll-snap-align: center;
+  }
+
   .project-frame {
     align-items: center;
   }
@@ -107,10 +170,11 @@ body {
   .project-content-wrapper {
     --project-base-width: 834;
     --project-mobile-scale: 1;
-    --project-mobile-width: min(350px, 94vw);
+    --project-mobile-width: min(360px, 94vw);
     --project-mobile-padding: 6px 4px;
-    max-width: var(--project-mobile-width, min(350px, 94vw));
-    width: var(--project-mobile-width, min(350px, 94vw));
+    max-width: var(--project-mobile-width, min(360px, 94vw));
+    width: var(--project-mobile-width, min(360px, 94vw));
+    height: auto;
     margin-inline: auto;
     padding: var(--project-mobile-padding, 6px 4px);
     transform: scale(var(--project-mobile-scale, 1));
@@ -129,6 +193,33 @@ body {
   #root {
     min-height: 100vh;
     min-height: 100dvh;
+  }
+
+  .mobile-page-controls {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 32px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    pointer-events: auto;
+  }
+
+  .mobile-page-control-button {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    border: none;
+    background-color: #e0e0e0;
+    padding: 0;
+    cursor: pointer;
+    transition: transform 160ms ease, background-color 160ms ease;
+  }
+
+  .mobile-page-control-button.active {
+    background-color: #000000;
+    transform: scale(1.2);
   }
 }
 
